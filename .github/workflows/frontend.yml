@@ -181,7 +181,7 @@ jobs:
       - name: Create .env file
         uses: noi-techpark/github-actions/env-file@v2
         env:
-          X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
+          X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}-eu
           X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
 
