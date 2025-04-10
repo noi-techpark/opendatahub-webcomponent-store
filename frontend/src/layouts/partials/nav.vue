@@ -64,6 +64,17 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                 Contact
               </b-nav-item>
             </b-navbar-nav>
+            <div class="sponsor-logo">
+              <a
+                href="https://europa.provincia.bz.it/it/informazione-e-visibilita-fesr"
+              >
+                <img
+                  src="../../static/EFRmod.png"
+                  alt="Provincia autonoma De Bozen"
+                  class="img-logo"
+                />
+              </a>
+            </div>
           </b-collapse>
         </b-navbar>
       </div>
@@ -122,5 +133,22 @@ export default {
 .text-small,
 .text-small * {
   font-size: 14px;
+}
+
+.sponsor-logo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.img-logo {
+  width: auto;
+  max-width: 200px;
+  height: auto;
 }
 </style>
