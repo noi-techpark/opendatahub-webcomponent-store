@@ -165,7 +165,7 @@ jobs:
           project-name: ${{ env.PROJECT_NAME }}
 
   deploy-eu-frontend:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/eu'
     needs: test
     concurrency: deploy-eu-frontend
