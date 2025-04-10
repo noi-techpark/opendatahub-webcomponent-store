@@ -163,3 +163,69 @@ jobs:
           docker-username: "noi-techpark-bot"
           docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           project-name: ${{ env.PROJECT_NAME }}
+
+  deploy-eu-frontend:
+    runs-on: ubuntu-24.04
+    if: github.ref == 'refs/heads/eu'
+    needs: test
+    concurrency: deploy-eu-frontend
+    env:
+      SCRIPTS_HOST: 'https://scripts.opendatahub.com'
+      SERVER_PORT: 1023
+      DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}-frontend-eu
+      DOCKER_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout source code
+        uses: noi-techpark/github-actions/checkout@v2
+      - name: Create .env file
+        uses: noi-techpark/github-actions/env-file@v2
+        env:
+          X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
+          X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
+          X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
+
+          X_SERVER_PORT: ${{ env.SERVER_PORT }}
+
+          X_API_BASE_URL: "https://api.webcomponents.opendatahub.com"
+          X_CDN_URL: "https://cdn.webcomponents.opendatahub.com"
+
+          X_HCAPTCHA_PUBLIC_KEY: 9f9020fc-605d-4f9a-b4d6-a80091e5abc8
+
+          X_BUILD_ENVIRONMENT: production
+          
+        with:
+          working-directory: frontend
+
+      - name: Setup node and yarn
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Change scripts host to prod
+        run: sed -i -e "s%https://scripts.opendatahub.testingmachine.eu%${{env.SCRIPTS_HOST}}%g" frontend/nuxt.config.js
+
+      - name: Build 
+        run: |
+          yarn install
+          yarn run generate
+        working-directory: frontend
+
+      - name: Build and push images
+        uses: noi-techpark/github-actions/docker-build-and-push@v2
+        with:
+          working-directory: frontend/infrastructure
+          docker-username: ${{ github.actor }}
+          docker-password: ${{ secrets.GITHUB_TOKEN }}
+            
+      - name: Deploy application
+        uses: noi-techpark/github-actions/docker-deploy@v2
+        with:
+          working-directory: frontend/infrastructure/ansible
+          hosts: "prod"
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          docker-username: "noi-techpark-bot"
+          docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+          project-name: ${{ env.PROJECT_NAME }}
