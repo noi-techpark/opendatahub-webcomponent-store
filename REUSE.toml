@@ -1,0 +1,16 @@
+version = 1
+SPDX-PackageName = "it.bz.opendatahub.webcomponents"
+SPDX-PackageSupplier = "NOI Techpark <digital@noi.bz.it>"
+SPDX-PackageDownloadLocation = "https://github.com/noi-techpark/it.bz.opendatahub.webcomponents"
+
+[[annotations]]
+path = [".github/**", ".gitignore", ".env.example", ".pre-commit-config.yaml", "webcompstore-cli/.env.example", "webcompstore-cli/docker", "webcompstore-cli/requirements.txt", "frontend/**.json", "frontend/docker/**", "frontend/.babelrc", "frontend/.editorconfig", "frontend/.env.example", "frontend/.gitignore", "frontend/.prettierrc", "frontend/yarn.lock", "frontend/src/assets/styles/fonts/**", "frontend/src/static/**", "backend/LICENSE.md", "backend/.gitignore", "backend/.env.example", "backend/.editorconfig", "backend/**/infrastructure/**", "**.properties", "backend/data-service/src/main/resources/db/migration/**", "webcompstore-cli/docker/Dockerfile", "webcompstore-cli/docker/docker-compose.local-wcs.yml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "(c) NOI Techpark <digital@noi.bz.it>"
+SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = ["frontend/tests/unit/wc-detail-block.spec.ts.broken", "frontend/tests/unit/wc-latest.spec.ts.broken", "frontend/infrastructure/**"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "(c) NOI Techpark <digital@noi.bz.it>"
+SPDX-License-Identifier = "AGPL-3.0-or-later"
