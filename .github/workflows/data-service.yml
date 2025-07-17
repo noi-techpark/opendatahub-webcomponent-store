@@ -19,7 +19,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04        
+    runs-on: ubuntu-22.04        
     steps:
       - uses: noi-techpark/github-actions/checkout@v2
 
@@ -35,7 +35,7 @@ jobs:
 
 
   deploy-test-data-service:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     needs: test
     concurrency: deploy-test-data-service
@@ -127,7 +127,7 @@ jobs:
           working-directory: ./backend/data-service/infrastructure/ansible
 
   deploy-prod-data-service:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/prod'
     needs: test
     concurrency: deploy-prod-data-service

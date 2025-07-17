@@ -19,7 +19,7 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04        
+    runs-on: ubuntu-22.04        
     steps:
       - uses: noi-techpark/github-actions/checkout@v2
 
@@ -36,7 +36,7 @@ jobs:
 
 
   deploy-test-frontend:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     needs: test
     concurrency: deploy-test-frontend
@@ -99,7 +99,7 @@ jobs:
 
 
   deploy-production-frontend:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/prod'
     needs: test
     concurrency: deploy-production-frontend
