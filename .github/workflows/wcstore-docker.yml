@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-api:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/prod'
     concurrency: build-api
     env:
@@ -28,7 +28,7 @@ jobs:
           docker-compose-file: docker-compose.local-wcs.yml
 
   build-cdn:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/prod'
     concurrency: build-cdn
     env:
@@ -48,7 +48,7 @@ jobs:
           docker-compose-file: docker-compose.local-wcs.yml
 
   build-cli:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/prod'
     concurrency: build-cli
     env:

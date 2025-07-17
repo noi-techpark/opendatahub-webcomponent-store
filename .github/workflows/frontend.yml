@@ -19,12 +19,12 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04        
+    runs-on: ubuntu-22.04        
     steps:
       - uses: noi-techpark/github-actions/checkout@v2
 
       - name: Test frontend
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
@@ -36,7 +36,7 @@ jobs:
 
 
   deploy-test-frontend:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     needs: test
     concurrency: deploy-test-frontend
@@ -68,7 +68,7 @@ jobs:
           working-directory: frontend
 
       - name: Setup node and yarn
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
@@ -99,7 +99,7 @@ jobs:
 
 
   deploy-production-frontend:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/prod'
     needs: test
     concurrency: deploy-production-frontend
@@ -132,7 +132,7 @@ jobs:
           working-directory: frontend
 
       - name: Setup node and yarn
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'

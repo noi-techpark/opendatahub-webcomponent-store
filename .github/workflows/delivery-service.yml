@@ -19,12 +19,12 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-20.04        
+    runs-on: ubuntu-22.04        
     steps:
       - uses: noi-techpark/github-actions/checkout@v2
 
       - name: REUSE Compliance Check
-        uses: fsfe/reuse-action@v1
+        uses: fsfe/reuse-action@v5
 
       - name: Test backend
         uses: noi-techpark/github-actions/maven-test@v2
@@ -35,7 +35,7 @@ jobs:
 
 
   deploy-test-delivery-service:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/main'
     needs: test
     concurrency: deploy-test-delivery-service
@@ -59,7 +59,7 @@ jobs:
 
           X_CDN_SWAGGER_BASE_URL: "https://cdn.webcomponents.opendatahub.testingmachine.eu"
 
-          X_DB_URL: "jdbc:postgresql://test-pg-bdp.co90ybcr8iim.eu-west-1.rds.amazonaws.com:5432/webcompstore"
+          X_DB_URL: "jdbc:postgresql://test-pg-misc.co90ybcr8iim.eu-west-1.rds.amazonaws.com:5432/webcompstore"
           X_DB_USR: ${{ secrets.DB_USR_TEST }}
           X_DB_PWD: ${{ secrets.DB_PWD_TEST }}
           X_DB_SCHEMA: "public"
@@ -98,7 +98,7 @@ jobs:
           working-directory: ./backend/delivery-service/infrastructure/ansible
 
   deploy-prod-delivery-service:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.ref == 'refs/heads/prod'
     needs: test
     concurrency: deploy-prod-delivery-service
