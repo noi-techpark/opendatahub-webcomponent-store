@@ -24,7 +24,7 @@ jobs:
       - uses: noi-techpark/github-actions/checkout@v2
 
       - name: Test frontend
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
@@ -68,7 +68,7 @@ jobs:
           working-directory: frontend
 
       - name: Setup node and yarn
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
@@ -132,7 +132,7 @@ jobs:
           working-directory: frontend
 
       - name: Setup node and yarn
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'yarn'
