@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: NOI Techpark
+SPDX-License-Identifier: CC0-1.0
+-->
+
 # Contributing to Open Data Hub
 
 Thank you for your interest in contributing to Open Data Hub! We welcome contributions from the community and appreciate your help in improving the project.
