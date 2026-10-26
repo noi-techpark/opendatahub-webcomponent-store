@@ -55,7 +55,7 @@ services:
 
   postgres:
     container_name: wcstore_postgres
-    image: postgres:13
+    image: postgres:17
     ports:
       - "5555:5432"
     environment:

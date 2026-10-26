@@ -43,12 +43,12 @@ on your local machine for development and testing purposes.
 
 To build the project, the following prerequisites must be met:
 
-- Java JDK 8 or higher (e.g. [OpenJDK](https://openjdk.java.net/))
+- Java JDK 21 or higher (e.g. [OpenJDK](https://openjdk.java.net/))
 - [Maven](https://maven.apache.org/) 3.x
 
 To run the project, the following prerequisites must be met:
 
-- Java JDK 8 or higher (e.g. [OpenJDK](https://openjdk.java.net/))
+- Java JDK 21 or higher (e.g. [OpenJDK](https://openjdk.java.net/))
 - Tomcat webserver OR local IDE (eg. [IntelliJ](https://www.jetbrains.com/))
 - PostgreSQL 9.6+
 - SMTP Server

@@ -8,8 +8,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.domain.Webcompone
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetDefaultPreviewSnippetUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWebcomponentVersionPort;
 import lombok.NonNull;
-import lombok.val;
-import lombok.var;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,7 +23,7 @@ public class WebcomponentPreviewService implements GetDefaultPreviewSnippetUseCa
 
 	@Override
 	public String getDefaultPreviewSnippet(@NonNull String webcomponentUuid, @NonNull String versionTag) {
-		val webcomponentVersion = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(
+		var webcomponentVersion = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(
 			webcomponentUuid,
 			versionTag
 		);
@@ -35,7 +33,7 @@ public class WebcomponentPreviewService implements GetDefaultPreviewSnippetUseCa
 
 	@Override
 	public String getDefaultPreviewSnippet(@NonNull String webcomponentUuid) {
-		val webcomponentVersion = readWebcomponentVersionPort.getLatestVersionOfWebcomponent(
+		var webcomponentVersion = readWebcomponentVersionPort.getLatestVersionOfWebcomponent(
 			webcomponentUuid
 		);
 
@@ -43,18 +41,18 @@ public class WebcomponentPreviewService implements GetDefaultPreviewSnippetUseCa
 	}
 
 	private String getAttributesFromConfig(WebcomponentVersion webcomponentVersion) {
-		val options = webcomponentVersion.getConfiguration().getOptions();
-		val tagName = webcomponentVersion.getConfiguration().getTagName();
+		var options = webcomponentVersion.getConfiguration().getOptions();
+		var tagName = webcomponentVersion.getConfiguration().getTagName();
 
-		val attribs = new ArrayList<String>();
+		var attribs = new ArrayList<String>();
 
-		for(val option : options) {
+		for(var option : options) {
 			if(!(option.getOptions() instanceof LinkedHashMap)) {
 				continue;
 			}
 
 			@SuppressWarnings("unchecked")
-			val innerOptions = (LinkedHashMap<String, Object>)option.getOptions();
+			var innerOptions = (LinkedHashMap<String, Object>)option.getOptions();
 
 			if(optionIsRequiredOrHasDefaultValue(option, innerOptions)) {
 				var quotes = "\"";

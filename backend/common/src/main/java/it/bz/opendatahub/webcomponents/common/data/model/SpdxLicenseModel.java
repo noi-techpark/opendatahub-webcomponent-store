@@ -8,14 +8,11 @@ import it.bz.opendatahub.webcomponents.common.hibernate.usertype.impl.ListString
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.List;
-
-@TypeDef(name = ListStringUserType.NAME, typeClass = ListStringUserType.class)
 
 @Getter
 @Setter
@@ -35,7 +32,7 @@ public class SpdxLicenseModel {
     @Id
     private String licenseId;
 
-    @Type(type = ListStringUserType.NAME)
+    @Type(ListStringUserType.class)
     private List<String> seeAlso;
 
     private Boolean isOsiApproved;

@@ -15,8 +15,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.out.WriteWeb
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.WriteWorkspacePort;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.NotFoundException;
 import lombok.NonNull;
-import lombok.val;
-import lombok.var;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +65,7 @@ public class WebcomponentAdminService implements CreateWebcomponentUseCase, Upda
 	@Override
 	@Transactional
 	public Webcomponent updateWebcomponent(@NonNull final String webcomponentUuid, @NonNull final WebcomponentUpdateRequest request) {
-		val webcomponent = readWebcomponentPort.getWebcomponentById(webcomponentUuid);
+		var webcomponent = readWebcomponentPort.getWebcomponentById(webcomponentUuid);
 
 		ConverterUtils.copyProperties(request, webcomponent);
 
@@ -78,7 +76,7 @@ public class WebcomponentAdminService implements CreateWebcomponentUseCase, Upda
 	@Transactional
 	public void deleteWebcomponentById(@NonNull final String uuid) {
 		try {
-			val webcomponent = readWebcomponentPort.getWebcomponentById(uuid);
+			var webcomponent = readWebcomponentPort.getWebcomponentById(uuid);
 			webcomponent.setDeleted(true);
 			writeWebcomponentPort.saveWebcomponent(webcomponent);
 		}
@@ -96,13 +94,13 @@ public class WebcomponentAdminService implements CreateWebcomponentUseCase, Upda
 	}
 
 	protected void updateLogo(Webcomponent webcomponent, String logoPngBase64) {
-		val oldLogoPath = Paths.get(webcomponent.getUuid(), webcomponent.getImage());
-		val newLogoPath = Paths.get(webcomponent.getUuid(), WCS_LOGO_PNG);
+		var oldLogoPath = Paths.get(webcomponent.getUuid(), webcomponent.getImage());
+		var newLogoPath = Paths.get(webcomponent.getUuid(), WCS_LOGO_PNG);
 
 		writeWorkspacePort.wipe(oldLogoPath);
 		writeWorkspacePort.wipe(newLogoPath);
 
-		val decodedFile = Base64.getDecoder().decode(logoPngBase64);
+		var decodedFile = Base64.getDecoder().decode(logoPngBase64);
 
 		try {
 			ImageIO.read(new ByteArrayInputStream(decodedFile));

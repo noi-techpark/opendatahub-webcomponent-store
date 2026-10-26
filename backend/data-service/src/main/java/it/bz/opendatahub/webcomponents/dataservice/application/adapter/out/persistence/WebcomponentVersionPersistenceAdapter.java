@@ -15,7 +15,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWebc
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.WriteWebcomponentVersionPort;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.NotFoundException;
 import lombok.NonNull;
-import lombok.val;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
@@ -60,9 +59,9 @@ public class WebcomponentVersionPersistenceAdapter implements ReadWebcomponentVe
 			return new HashMap<>();
 		}
 
-		val versions = webcomponentVersionRepository.listAllVersionsForEachWebcomponentLatestFirst(webcomponentIds);
-		val result = new HashMap<String, WebcomponentVersion>();
-		for(val entry : versions) {
+		var versions = webcomponentVersionRepository.listAllVersionsForEachWebcomponentLatestFirst(webcomponentIds);
+		var result = new HashMap<String, WebcomponentVersion>();
+		for(var entry : versions) {
 			if(!result.containsKey(entry.getWebcomponentUuid())) {
 				result.put(
 					entry.getWebcomponentUuid(),
@@ -87,7 +86,7 @@ public class WebcomponentVersionPersistenceAdapter implements ReadWebcomponentVe
 
 	@Override
 	public WebcomponentVersion saveWebcomponentVersion(@NonNull WebcomponentVersion webcomponentVersion) {
-		val probe = webcomponentVersionRepository.findById(
+		var probe = webcomponentVersionRepository.findById(
 			WebcomponentVersionId.of(
 				webcomponentVersion.getWebcomponentUuid(),
 				webcomponentVersion.getVersionTag()

@@ -8,7 +8,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.adapter.out.persi
 import it.bz.opendatahub.webcomponents.dataservice.application.adapter.out.persistence.repository.impl.WorkspaceRepositoryImpl;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.NotFoundException;
 import lombok.SneakyThrows;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -39,8 +38,8 @@ class WorkspacePersistenceAdapterTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void readFileReturnsDataIfExisting() {
-		val path = Paths.get("nope");
-		val data = "theData".getBytes();
+		var path = Paths.get("nope");
+		var data = "theData".getBytes();
 
 		when(workspaceRepository.readFile(path)).thenReturn(data);
 
@@ -50,7 +49,7 @@ class WorkspacePersistenceAdapterTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void readFileThrowsIfNonExisting() {
-		val path = Paths.get("nope");
+		var path = Paths.get("nope");
 
 		doThrow(new IOException())
 			.when(workspaceRepository)
@@ -66,7 +65,7 @@ class WorkspacePersistenceAdapterTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void writeFileDoesThrowRuntimeExceptionOnError() {
-		val path = Paths.get("nope");
+		var path = Paths.get("nope");
 
 		doThrow(new IOException())
 			.when(workspaceRepository)

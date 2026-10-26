@@ -4,7 +4,6 @@
 
 package it.bz.opendatahub.webcomponents.common.converter;
 
-import lombok.val;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -32,7 +31,7 @@ public abstract class BeanConverter<S, T> {
 	}
 
 	private void resolveTypes() {
-		val parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
+		var parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
 
 		@SuppressWarnings("unchecked") final Class<S> dtoTypeArgument = (Class<S>) parameterizedType.getActualTypeArguments()[0];
 
@@ -73,11 +72,11 @@ public abstract class BeanConverter<S, T> {
 			return null;
 		}
 
-		val targetObject = createTargetObject(targetConstructor);
+		var targetObject = createTargetObject(targetConstructor);
 
 		ConverterUtils.copyProperties(source, targetObject);
 
-		@SuppressWarnings("unchecked") val target = (T) targetObject;
+		@SuppressWarnings("unchecked") var target = (T) targetObject;
 
 		return target;
 	}
@@ -87,7 +86,7 @@ public abstract class BeanConverter<S, T> {
 			return null;
 		}
 
-		val resList = new ArrayList<T>();
+		var resList = new ArrayList<T>();
 
 		for(S source : sources) {
 			resList.add(convert(source));
@@ -101,7 +100,7 @@ public abstract class BeanConverter<S, T> {
 			return null;
 		}
 
-		val resSet = new HashSet<T>();
+		var resSet = new HashSet<T>();
 
 		for(S source : sources) {
 			resSet.add(convert(source));
@@ -115,7 +114,7 @@ public abstract class BeanConverter<S, T> {
 			return null;
 		}
 
-		val resList = convert(sources.getContent());
+		var resList = convert(sources.getContent());
 
 		return new PageImpl<>(
 			resList,
@@ -129,7 +128,7 @@ public abstract class BeanConverter<S, T> {
 			return null;
 		}
 
-		val targetMap = new HashMap<Object, T>();
+		var targetMap = new HashMap<Object, T>();
 
 		for (Map.Entry<?, S> entry : sources.entrySet()) {
 			targetMap.put(entry.getKey(), convert(entry.getValue()));

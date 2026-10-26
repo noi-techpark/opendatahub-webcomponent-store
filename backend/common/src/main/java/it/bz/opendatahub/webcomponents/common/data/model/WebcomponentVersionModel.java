@@ -13,18 +13,13 @@ import it.bz.opendatahub.webcomponents.common.hibernate.usertype.impl.StringUser
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Date;
-
-@TypeDef(name = ConfigurationUserType.NAME, typeClass = ConfigurationUserType.class)
-@TypeDef(name = DistUserType.NAME, typeClass = DistUserType.class)
-@TypeDef(name = StringUserType.NAME, typeClass = StringUserType.class)
 
 @Getter
 @Setter
@@ -40,24 +35,24 @@ public class WebcomponentVersionModel {
 
     private Date releaseTimestamp;
 
-    @Type(type = DistUserType.NAME)
+    @Type(DistUserType.class)
     private Dist dist;
 
-    @Type(type = ConfigurationUserType.NAME)
+    @Type(ConfigurationUserType.class)
     private Configuration configuration;
 
     private Boolean deleted;
 
     private Integer distSizeTotalKb = 0;
 
-	@Type(type = StringUserType.NAME)
+	@Type(StringUserType.class)
 	private String lighthouseMetricsMobileData;
 
 	private LocalDateTime lighthouseMetricsMobileDatetime;
 
 	private Integer lighthouseMobilePerformanceRating = 0;
 
-	@Type(type = StringUserType.NAME)
+	@Type(StringUserType.class)
 	private String lighthouseMetricsDesktopData;
 
 	private LocalDateTime lighthouseMetricsDesktopDatetime;

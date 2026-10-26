@@ -6,7 +6,6 @@ package it.bz.opendatahub.webcomponents.dataservice.application.adapter.out.pers
 
 import it.bz.opendatahub.webcomponents.dataservice.config.WorkspaceConfiguration;
 import lombok.SneakyThrows;
-import lombok.val;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ class WorkspaceRepositoryImplTest {
 		FileUtils.deleteQuietly(TESTDATA_PATH.toFile());
 		FileUtils.forceMkdir(TESTDATA_PATH.toFile());
 
-		val config = new WorkspaceConfiguration();
+		var config = new WorkspaceConfiguration();
 		config.setPath(TESTDATA_PATH.toString());
 
 		workspaceRepository = new WorkspaceRepositoryImpl(config);
@@ -42,7 +41,7 @@ class WorkspaceRepositoryImplTest {
 
 	@Test
 	void readFileThrowsIfNonExistingFile() {
-		val thePath = Paths.get(TESTDATA_PATH.toString(), "readFileThrowsIfNonExistingFile");
+		var thePath = Paths.get(TESTDATA_PATH.toString(), "readFileThrowsIfNonExistingFile");
 
 		assertThatIOException().isThrownBy(
 			() -> workspaceRepository.readFile(thePath)
@@ -52,7 +51,7 @@ class WorkspaceRepositoryImplTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void readFileReturnsDataForExistingfile() {
-		val thePath = Paths.get(TESTDATA_PATH.toString(), "readFileReturnsDataForExistingfile");
+		var thePath = Paths.get(TESTDATA_PATH.toString(), "readFileReturnsDataForExistingfile");
 
 		FileUtils.writeByteArrayToFile(thePath.toFile(), "theContent".getBytes());
 
@@ -69,7 +68,7 @@ class WorkspaceRepositoryImplTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void writeFileDoesNotThrowIfAlreadyExists() {
-		val thePath = Paths.get(TESTDATA_PATH.toString(), "writeFileDoesNotThrowIfAlreadyExists");
+		var thePath = Paths.get(TESTDATA_PATH.toString(), "writeFileDoesNotThrowIfAlreadyExists");
 
 		FileUtils.writeByteArrayToFile(thePath.toFile(), "theContent".getBytes());
 
@@ -81,7 +80,7 @@ class WorkspaceRepositoryImplTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void writeFileDoesActuallyWriteTheFile() {
-		val thePath = Paths.get(TESTDATA_PATH.toString(), "writeFileDoesActuallyWriteTheFile");
+		var thePath = Paths.get(TESTDATA_PATH.toString(), "writeFileDoesActuallyWriteTheFile");
 
 		FileUtils.writeByteArrayToFile(thePath.toFile(), "theContent".getBytes());
 
@@ -107,7 +106,7 @@ class WorkspaceRepositoryImplTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void deletePathDoesActuallyDeleteThePathIfPathIsAFile() {
-		val thePath = Paths.get(TESTDATA_PATH.toString(), "deletePathDoesActuallyDeleteThePathIfPathIsAFile");
+		var thePath = Paths.get(TESTDATA_PATH.toString(), "deletePathDoesActuallyDeleteThePathIfPathIsAFile");
 
 		FileUtils.writeByteArrayToFile(thePath.toFile(), "theContent".getBytes());
 
@@ -121,7 +120,7 @@ class WorkspaceRepositoryImplTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void deletePathDoesActuallyDeleteThePathIfPathIsADirectory() {
-		val thePath = Paths.get(TESTDATA_PATH.toString(), "deletePathDoesActuallyDeleteThePathIfPathIsADirectory");
+		var thePath = Paths.get(TESTDATA_PATH.toString(), "deletePathDoesActuallyDeleteThePathIfPathIsADirectory");
 
 		FileUtils.forceMkdir(thePath.toFile());
 
@@ -142,7 +141,7 @@ class WorkspaceRepositoryImplTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void getDirectorySizeInBytesDoesReturnSizeForExistingDirectory() {
-		val thePath = Paths.get(TESTDATA_PATH.toString(), "getDirectorySizeInBytesDoesReturnSizeForExistingDirectory");
+		var thePath = Paths.get(TESTDATA_PATH.toString(), "getDirectorySizeInBytesDoesReturnSizeForExistingDirectory");
 
 		FileUtils.forceMkdir(thePath.toFile());
 
@@ -159,7 +158,7 @@ class WorkspaceRepositoryImplTest {
 	@Test
 	@SneakyThrows(IOException.class)
 	void getDirectorySizeInBytesThrowsIfPathIsAFile() {
-		val thePath = Paths.get(TESTDATA_PATH.toString(), "getDirectorySizeInBytesThrowsIfPathIsAFile");
+		var thePath = Paths.get(TESTDATA_PATH.toString(), "getDirectorySizeInBytesThrowsIfPathIsAFile");
 
 		FileUtils.forceMkdir(thePath.toFile());
 

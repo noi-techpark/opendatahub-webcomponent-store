@@ -6,9 +6,10 @@ package it.bz.opendatahub.webcomponents.common.hibernate.usertype;
 
 import java.util.List;
 
-public abstract class ListUserType extends AbstractUserType {
+public abstract class ListUserType<E> extends AbstractUserType<List<E>> {
 	@Override
-    public Class returnedClass() {
-        return List.class;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Class<List<E>> returnedClass() {
+        return (Class) List.class;
     }
 }

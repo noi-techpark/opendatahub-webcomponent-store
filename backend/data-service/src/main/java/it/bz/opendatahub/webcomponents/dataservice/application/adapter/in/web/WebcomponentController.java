@@ -18,10 +18,8 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcom
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcomponentLogoUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcomponentUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.ListWebcomponentUseCase;
-import lombok.val;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -103,11 +101,11 @@ public class WebcomponentController {
 			tagList = Arrays.asList(tags);
 		}
 
-		val filter = new ListWebcomponentUseCase.WebcomponentFilter();
+		var filter = new ListWebcomponentUseCase.WebcomponentFilter();
 		filter.setSearchTerm(searchTerm);
 		filter.setTags(tagList);
 
-		val resultPage = listWebcomponentUseCase.listPagedAndFiltered(pageRequest, filter);
+		var resultPage = listWebcomponentUseCase.listPagedAndFiltered(pageRequest, filter);
 
 		return webcomponentEntryWebConverter.convert(resultPage);
 	}
@@ -119,7 +117,7 @@ public class WebcomponentController {
 
 	@GetMapping(value = { "/{uuid}/config", "/{uuid}/config/latest" })
 	public WebcomponentConfigurationRest getConfiguration(@PathVariable String uuid) {
-		val configuration = getWebcomponentConfigurationUseCase.getConfiguration(uuid);
+		var configuration = getWebcomponentConfigurationUseCase.getConfiguration(uuid);
 
 		return toRest(configuration);
 	}
@@ -127,7 +125,7 @@ public class WebcomponentController {
 	@GetMapping("/{uuid}/config/{versionTag}")
 	public WebcomponentConfigurationRest getConfigurationForVersion(@PathVariable String uuid,
 			@PathVariable String versionTag) {
-		val configuration = getWebcomponentConfigurationUseCase.getConfiguration(uuid, versionTag);
+		var configuration = getWebcomponentConfigurationUseCase.getConfiguration(uuid, versionTag);
 
 		return toRest(configuration);
 	}
@@ -149,17 +147,17 @@ public class WebcomponentController {
 			return thumbCache.get(uuid);
 		}
 
-		val fullLogoData = getLogoImage(uuid);
+		var fullLogoData = getLogoImage(uuid);
 
-		val image = ThumbnailUtility.createThumbnailForImage(new ByteArrayInputStream(fullLogoData), thumbnailWidth,
+		var image = ThumbnailUtility.createThumbnailForImage(new ByteArrayInputStream(fullLogoData), thumbnailWidth,
 				thumbnailHeight);
 
-		val data = ThumbnailUtility.toJpg(image).toByteArray();
+		var data = ThumbnailUtility.toJpg(image).toByteArray();
 
-		val max = 100;
-		val min = 10;
-		val range = max - min + 1;
-		val rand = (int) (Math.random() * range) + min;
+		var max = 100;
+		var min = 10;
+		var range = max - min + 1;
+		var rand = (int) (Math.random() * range) + min;
 
 		thumbCacheTimer.put(uuid, System.currentTimeMillis() + 60 * 60 * 1000L + rand * 1000L);
 		thumbCache.put(uuid, data);
@@ -168,7 +166,7 @@ public class WebcomponentController {
 	}
 
 	private WebcomponentConfigurationRest toRest(WebcomponentConfiguration domain) {
-		val rest = new WebcomponentConfigurationRest();
+		var rest = new WebcomponentConfigurationRest();
 
 		ConverterUtils.copyProperties(domain, rest);
 		rest.setScriptSources(domain.getScriptSources()); // TODO: check if that is even needed
@@ -178,8 +176,7 @@ public class WebcomponentController {
 
 	@PostMapping(value = "/createCodeSandbox")
 	public String createCodeSandbox(@RequestBody @Valid CreateCodingSandboxUseCase.CodeSandboxRequest request)
-			throws JSONException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException, IOException,
-			CertificateException {
+			{
 		return createCodingSandboxUseCase.createCodeSandbox(request);
 	}
 }

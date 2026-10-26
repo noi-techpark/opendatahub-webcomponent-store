@@ -14,7 +14,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.in.Recalcula
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.RefetchAllLighthouseMetricsUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.ReplaceWebcomponentLogoUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.UpdateWebcomponentUseCase;
-import lombok.val;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @SecurityRequirement(name = "bearerAuth")
 @WebAdapter
@@ -51,7 +50,7 @@ public class WebcomponentAdminController {
 
 	@PostMapping
 	public WebcomponentRest createWebcomponent(@RequestBody @Valid CreateWebcomponentUseCase.WebcomponentCreateRequest request) {
-		val result = createWebcomponentUseCase.createWebcomponent(request);
+		var result = createWebcomponentUseCase.createWebcomponent(request);
 
 		return webcomponentWebConverter.convert(result);
 	}
@@ -68,14 +67,14 @@ public class WebcomponentAdminController {
 
 	@PutMapping("/{uuid}")
 	public WebcomponentRest updateWebcomponent(@PathVariable String uuid, @RequestBody @Valid UpdateWebcomponentUseCase.WebcomponentUpdateRequest request) {
-		val result = updateWebcomponentUseCase.updateWebcomponent(uuid, request);
+		var result = updateWebcomponentUseCase.updateWebcomponent(uuid, request);
 
 		return webcomponentWebConverter.convert(result);
 	}
 
 	@PatchMapping("/{uuid}/logo")
 	public WebcomponentRest updateWebcomponent(@PathVariable String uuid, @RequestBody @Valid ReplaceWebcomponentLogoUseCase.WebcomponentLogoReplaceRequest request) {
-		val result = replaceWebcomponentLogoUseCase.replaceLogo(uuid, request);
+		var result = replaceWebcomponentLogoUseCase.replaceLogo(uuid, request);
 
 		return webcomponentWebConverter.convert(result);
 	}

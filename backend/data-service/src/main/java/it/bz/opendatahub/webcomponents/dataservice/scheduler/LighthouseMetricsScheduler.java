@@ -7,7 +7,6 @@ package it.bz.opendatahub.webcomponents.dataservice.scheduler;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.UpdateWebcomponentVersionMetricsUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWebcomponentVersionPort;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +23,9 @@ public class LighthouseMetricsScheduler {
 
 	@Scheduled(fixedDelayString = "60000")
 	public void updateLighthouseMetrics() throws InterruptedException {
-		val allVersionsToUpdate = readWebcomponentVersionPort.getAllWithScheduledLighthouseUpdate();
+		var allVersionsToUpdate = readWebcomponentVersionPort.getAllWithScheduledLighthouseUpdate();
 
- 		for(val webcomponentVersion : allVersionsToUpdate) {
+ 		for(var webcomponentVersion : allVersionsToUpdate) {
 			updateWebcomponentVersionMetricsUseCase.updateMetricsForWebcomponentVersion(webcomponentVersion);
 		}
 

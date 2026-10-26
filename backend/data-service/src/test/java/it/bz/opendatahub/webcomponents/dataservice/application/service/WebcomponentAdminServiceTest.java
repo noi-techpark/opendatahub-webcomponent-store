@@ -13,7 +13,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWebc
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.WriteWebcomponentPort;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.WriteWorkspacePort;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.NotFoundException;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -125,7 +124,7 @@ class WebcomponentAdminServiceTest {
 		when(readWebcomponentPort.getWebcomponentById(WEBCOMPONENT_A.getUuid())).thenReturn(WEBCOMPONENT_A);
 		when(writeWebcomponentPort.saveWebcomponent(WEBCOMPONENT_A)).thenReturn(WEBCOMPONENT_A);
 
-		val request = new UpdateWebcomponentUseCase.WebcomponentUpdateRequest();
+		var request = new UpdateWebcomponentUseCase.WebcomponentUpdateRequest();
 		request.setTitle("");
 		request.setDescription("a2");
 		request.setDescriptionAbstract("a3");
@@ -135,7 +134,7 @@ class WebcomponentAdminServiceTest {
 		request.setAuthors(new ArrayList<>());
 		request.setSearchTags(new ArrayList<>());
 
-		val result = webcomponentAdminService.updateWebcomponent(WEBCOMPONENT_A.getUuid(), request);
+		var result = webcomponentAdminService.updateWebcomponent(WEBCOMPONENT_A.getUuid(), request);
 
 		assertThat(result.getTitle()).isEqualTo(request.getTitle());
 
@@ -154,7 +153,7 @@ class WebcomponentAdminServiceTest {
 		when(writeWebcomponentPort.saveWebcomponent(any())).thenAnswer(i -> i.getArguments()[0]);
 		when(readWebcomponentPort.getWebcomponentById(any())).thenReturn(WEBCOMPONENT_A);
 
-		val request = new CreateWebcomponentUseCase.WebcomponentCreateRequest();
+		var request = new CreateWebcomponentUseCase.WebcomponentCreateRequest();
 		request.setImagePngBase64(PNG_BASE64);
 
 		webcomponentAdminService.createWebcomponent(request);
@@ -164,7 +163,7 @@ class WebcomponentAdminServiceTest {
 
 	@Test
 	void createWebcomponentDoesTriggerLogoUpdate() {
-		val request = new CreateWebcomponentUseCase.WebcomponentCreateRequest();
+		var request = new CreateWebcomponentUseCase.WebcomponentCreateRequest();
 		request.setImagePngBase64(PNG_BASE64);
 
 		webcomponentAdminService.createWebcomponent(request);
@@ -178,7 +177,7 @@ class WebcomponentAdminServiceTest {
 		when(writeWebcomponentPort.saveWebcomponent(any())).thenAnswer(i -> i.getArguments()[0]);
 		when(readWebcomponentPort.getWebcomponentById(any())).thenReturn(WEBCOMPONENT_A);
 
-		val request = new CreateWebcomponentUseCase.WebcomponentCreateRequest();
+		var request = new CreateWebcomponentUseCase.WebcomponentCreateRequest();
 		request.setTitle("");
 		request.setDescription("");
 		request.setDescriptionAbstract("");
@@ -189,7 +188,7 @@ class WebcomponentAdminServiceTest {
 		request.setAuthors(new ArrayList<>());
 		request.setSearchTags(new ArrayList<>());
 
-		val result = webcomponentAdminService.createWebcomponent(request);
+		var result = webcomponentAdminService.createWebcomponent(request);
 
 		BeanAssert.assertThat(result).hasCopiedAllProperties(request, "imagePngBase64");
 
@@ -202,7 +201,7 @@ class WebcomponentAdminServiceTest {
 	void replaceLogoDoesTriggerLogoUpdate() {
 		when(readWebcomponentPort.getWebcomponentById(any())).thenReturn(WEBCOMPONENT_A);
 
-		val request = new ReplaceWebcomponentLogoUseCase.WebcomponentLogoReplaceRequest();
+		var request = new ReplaceWebcomponentLogoUseCase.WebcomponentLogoReplaceRequest();
 		request.setLogoPngBase64(PNG_BASE64);
 
 		webcomponentAdminService.replaceLogo(WEBCOMPONENT_A.getUuid(), request);

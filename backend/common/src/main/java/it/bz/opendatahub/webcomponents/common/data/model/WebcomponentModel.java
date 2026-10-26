@@ -10,15 +10,11 @@ import it.bz.opendatahub.webcomponents.common.hibernate.usertype.impl.ListString
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.util.List;
-
-@TypeDef(name = ListAuthorUserType.NAME, typeClass = ListAuthorUserType.class)
-@TypeDef(name = ListStringUserType.NAME, typeClass = ListStringUserType.class)
 
 @Getter
 @Setter
@@ -38,17 +34,17 @@ public class WebcomponentModel {
 
     private String repositoryUrl;
 
-    @Type(type = ListAuthorUserType.NAME)
+    @Type(ListAuthorUserType.class)
     private List<Author> copyrightHolders;
 
     private String image;
 
     private String license;
 
-    @Type(type = ListAuthorUserType.NAME)
+    @Type(ListAuthorUserType.class)
     private List<Author> authors;
 
-    @Type(type = ListStringUserType.NAME)
+    @Type(ListStringUserType.class)
     private List<String> searchTags;
 
     private Boolean deleted;

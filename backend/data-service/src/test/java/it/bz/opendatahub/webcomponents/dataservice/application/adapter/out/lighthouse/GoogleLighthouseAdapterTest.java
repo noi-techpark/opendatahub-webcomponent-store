@@ -7,7 +7,6 @@ package it.bz.opendatahub.webcomponents.dataservice.application.adapter.out.ligh
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.MetricsErrorException;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.MetricsInvalidRequestException;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.MetricsUnavailableException;
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.when;
 class GoogleLighthouseAdapterTest {
 	@Test
 	void getMetricsForUrlThrowsIfNullArgument() {
-		val adapter = new GoogleLighthouseAdapter(Mockito.mock(RestTemplate.class));
+		var adapter = new GoogleLighthouseAdapter(Mockito.mock(RestTemplate.class));
 
 		assertThatNullPointerException().isThrownBy(
 			() -> adapter.getMetricsForUrl(null)
@@ -38,7 +37,7 @@ class GoogleLighthouseAdapterTest {
 	@ParameterizedTest
 	@ValueSource(strings = {"", " ", "  ", "	"})
 	void getMetricsForUrlTrhowsIfEmptyArgument(String empty) {
-		val adapter = new GoogleLighthouseAdapter(Mockito.mock(RestTemplate.class));
+		var adapter = new GoogleLighthouseAdapter(Mockito.mock(RestTemplate.class));
 
 		assertThatIllegalArgumentException().isThrownBy(
 			() -> adapter.getMetricsForUrl(empty)
@@ -47,17 +46,17 @@ class GoogleLighthouseAdapterTest {
 
 	@Test
 	void getMetricsForUrlUsesApiKeyIfProvided() throws NoSuchFieldException, IllegalAccessException, MetricsInvalidRequestException, MetricsUnavailableException, MetricsErrorException {
-		val restTemplate = Mockito.mock(RestTemplate.class);
+		var restTemplate = Mockito.mock(RestTemplate.class);
 
-		val adapter = new GoogleLighthouseAdapter(restTemplate);
+		var adapter = new GoogleLighthouseAdapter(restTemplate);
 
-		val field = adapter.getClass().getDeclaredField("apiKey");
+		var field = adapter.getClass().getDeclaredField("apiKey");
 		field.setAccessible(true);
 		field.set(adapter, "TheKey");
 
 		adapter.getMetricsForUrl("https://google.at");
 
-		val captur = ArgumentCaptor.forClass(String.class);
+		var captur = ArgumentCaptor.forClass(String.class);
 		verify(restTemplate, times(2)).getForObject(captur.capture(), any());
 
 		assertThat(captur.getValue()).contains("key=TheKey");
@@ -65,12 +64,12 @@ class GoogleLighthouseAdapterTest {
 
 	@Test
 	void getMetricsForUrlQueriesTheDesiredUrl() throws MetricsInvalidRequestException, MetricsUnavailableException, MetricsErrorException {
-		val restTemplate = Mockito.mock(RestTemplate.class);
+		var restTemplate = Mockito.mock(RestTemplate.class);
 
-		val adapter = new GoogleLighthouseAdapter(restTemplate);
+		var adapter = new GoogleLighthouseAdapter(restTemplate);
 		adapter.getMetricsForUrl("https://google.at");
 
-		val captur = ArgumentCaptor.forClass(String.class);
+		var captur = ArgumentCaptor.forClass(String.class);
 		verify(restTemplate, times(2)).getForObject(captur.capture(), any());
 
 		assertThat(captur.getValue()).contains("url=https://google.at");
@@ -78,12 +77,12 @@ class GoogleLighthouseAdapterTest {
 
 	@Test
 	void getMetricsForUrlReturnsTwoValues() throws MetricsInvalidRequestException, MetricsUnavailableException, MetricsErrorException {
-		val restTemplate = Mockito.mock(RestTemplate.class);
+		var restTemplate = Mockito.mock(RestTemplate.class);
 		when(restTemplate.getForObject(anyString(), any())).thenReturn("data");
 
-		val adapter = new GoogleLighthouseAdapter(restTemplate);
+		var adapter = new GoogleLighthouseAdapter(restTemplate);
 
-		val result = adapter.getMetricsForUrl("https://google.at");
+		var result = adapter.getMetricsForUrl("https://google.at");
 
 		assertThat(result.getResultDesktop()).isEqualTo("data");
 		assertThat(result.getResultMobile()).isEqualTo("data");
@@ -91,10 +90,10 @@ class GoogleLighthouseAdapterTest {
 
 	@Test
 	void getMetricsForUrlThrowsOnHttp4xx() {
-		val restTemplate = Mockito.mock(RestTemplate.class);
+		var restTemplate = Mockito.mock(RestTemplate.class);
 		when(restTemplate.getForObject(anyString(), any())).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
-		val adapter = new GoogleLighthouseAdapter(restTemplate);
+		var adapter = new GoogleLighthouseAdapter(restTemplate);
 
 		assertThatExceptionOfType(MetricsInvalidRequestException.class).isThrownBy(
 			() -> adapter.getMetricsForUrl("any")
@@ -103,10 +102,10 @@ class GoogleLighthouseAdapterTest {
 
 	@Test
 	void getMetricsForUrlThrowsOnHttp500() {
-		val restTemplate = Mockito.mock(RestTemplate.class);
+		var restTemplate = Mockito.mock(RestTemplate.class);
 		when(restTemplate.getForObject(anyString(), any())).thenThrow(new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
-		val adapter = new GoogleLighthouseAdapter(restTemplate);
+		var adapter = new GoogleLighthouseAdapter(restTemplate);
 
 		assertThatExceptionOfType(MetricsUnavailableException.class).isThrownBy(
 			() -> adapter.getMetricsForUrl("any")
@@ -115,10 +114,10 @@ class GoogleLighthouseAdapterTest {
 
 	@Test
 	void getMetricsForUrlThrowsOnHttp5xx() {
-		val restTemplate = Mockito.mock(RestTemplate.class);
+		var restTemplate = Mockito.mock(RestTemplate.class);
 		when(restTemplate.getForObject(anyString(), any())).thenThrow(new HttpServerErrorException(HttpStatus.GATEWAY_TIMEOUT));
 
-		val adapter = new GoogleLighthouseAdapter(restTemplate);
+		var adapter = new GoogleLighthouseAdapter(restTemplate);
 
 		assertThatExceptionOfType(MetricsErrorException.class).isThrownBy(
 			() -> adapter.getMetricsForUrl("any")

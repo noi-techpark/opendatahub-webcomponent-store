@@ -16,7 +16,6 @@ import it.bz.opendatahub.webcomponents.dataservice.exception.impl.MetricsInvalid
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.MetricsUnavailableException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -43,7 +42,7 @@ public class WebcomponentVersionMetricsService implements UpdateWebcomponentVers
 			webcomponentVersion.getVersionTag()
 		);
 
-		val previewUrl = getPreviewUrlForWebcomponentVersion(webcomponentVersion);
+		var previewUrl = getPreviewUrlForWebcomponentVersion(webcomponentVersion);
 
 		try {
 			loadAndUpdateMetricsData(webcomponentVersion, previewUrl);
@@ -68,7 +67,7 @@ public class WebcomponentVersionMetricsService implements UpdateWebcomponentVers
 
 	private void loadAndUpdateMetricsData(WebcomponentVersion webcomponentVersion, String previewUrl) throws MetricsErrorException {
 		try {
-			val metrics = fetchMetrics(previewUrl);
+			var metrics = fetchMetrics(previewUrl);
 
 			webcomponentVersion.setLighthouseMetricsMobileData(metrics.getResultMobile());
 			webcomponentVersion.setLighthouseMetricsDesktopData(metrics.getResultMobile());

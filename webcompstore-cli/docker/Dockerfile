@@ -1,4 +1,4 @@
-FROM python:3.8.13-alpine3.15
+FROM python:3.13-alpine
 
 COPY requirements.txt ./
 COPY .env.example ./.env

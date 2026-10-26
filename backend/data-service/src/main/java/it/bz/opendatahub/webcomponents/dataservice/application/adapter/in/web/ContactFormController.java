@@ -10,7 +10,6 @@ import it.bz.opendatahub.webcomponents.dataservice.config.MailerConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -27,8 +26,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 @WebAdapter
 @RestController
@@ -60,7 +59,7 @@ public class ContactFormController {
 		// TODO replace with test keys
 		// https://docs.hcaptcha.com/#integration-testing-test-keys
 		if (hCaptchaSecretKey == null || hCpatchaTokenValidation(hCaptchaToken)) {
-			val requestAsText = "Category: " + nullToEmpty(request.getCategory()) + "\n" +
+			var requestAsText = "Category: " + nullToEmpty(request.getCategory()) + "\n" +
 					"First name: " + nullToEmpty(request.getNameFirst()) + "\n" +
 					"Last name: " + nullToEmpty(request.getNameLast()) + "\n" +
 					"E-mail: " + nullToEmpty(request.getEmail()) + "\n" +

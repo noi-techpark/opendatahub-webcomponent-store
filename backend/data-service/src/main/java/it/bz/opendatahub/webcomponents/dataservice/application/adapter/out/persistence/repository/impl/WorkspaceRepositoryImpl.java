@@ -7,7 +7,6 @@ package it.bz.opendatahub.webcomponents.dataservice.application.adapter.out.pers
 import it.bz.opendatahub.webcomponents.dataservice.application.adapter.out.persistence.repository.WorkspaceRepository;
 import it.bz.opendatahub.webcomponents.dataservice.config.WorkspaceConfiguration;
 import lombok.NonNull;
-import lombok.val;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,30 +26,30 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     @Override
     public byte[] readFile(@NonNull Path path) throws IOException {
-        val localPath = Paths.get(workspaceConfiguration.getPath(), path.toString());
+        var localPath = Paths.get(workspaceConfiguration.getPath(), path.toString());
 
         return FileUtils.readFileToByteArray(localPath.toFile());
     }
 
 	@Override
 	public void writeFile(@NonNull Path path, byte[] data) throws IOException {
-		val localPath = Paths.get(workspaceConfiguration.getPath(), path.toString());
+		var localPath = Paths.get(workspaceConfiguration.getPath(), path.toString());
 
 		FileUtils.writeByteArrayToFile(localPath.toFile(), data);
 	}
 
 	@Override
 	public void deletePath(@NonNull Path path) {
-		val localPath = Paths.get(workspaceConfiguration.getPath(), path.toString());
+		var localPath = Paths.get(workspaceConfiguration.getPath(), path.toString());
 
 		FileUtils.deleteQuietly(localPath.toFile());
 	}
 
 	@Override
 	public long getDirectorySizeInBytes(@NonNull Path path) throws IllegalArgumentException {
-		val localPath = Paths.get(workspaceConfiguration.getPath(), path.toString());
+		var localPath = Paths.get(workspaceConfiguration.getPath(), path.toString());
 
-		val file = localPath.toFile();
+		var file = localPath.toFile();
 
 		if(!file.exists()) {
 			return 0;

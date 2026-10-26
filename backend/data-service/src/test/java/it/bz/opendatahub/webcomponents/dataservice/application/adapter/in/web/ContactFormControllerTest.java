@@ -9,7 +9,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.adapter.in.web.Co
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.SendEmailUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.config.MailerConfig;
 import lombok.SneakyThrows;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -76,7 +75,7 @@ class ContactFormControllerTest {
 	@Test
 	@SneakyThrows
 	void emailTextContainsRequestData() {
-		val request = new ContactFormController.ContactFormRequest();
+		var request = new ContactFormController.ContactFormRequest();
 		request.setEmail("theMail");
 		request.setCategory("theCategory");
 		request.setPhone("thePhone");
@@ -89,12 +88,12 @@ class ContactFormControllerTest {
 
 		Map<String, String> map = new ObjectMapper().convertValue(request, Map.class);
 
-		//val requestAsText = new ObjectMapper().writeValueAsString(request);
+		//var requestAsText = new ObjectMapper().writeValueAsString(request);
 
-		val captur = ArgumentCaptor.forClass(String.class);
+		var captur = ArgumentCaptor.forClass(String.class);
 		verify(sendEmailUseCase).sendPlaintextEmail(anyString(), anyString(), captur.capture());
 
-		for(val field : map.entrySet()) {
+		for(var field : map.entrySet()) {
 			if(field.getValue() != null) {
 				assertThat(captur.getValue()).contains(field.getValue());
 			}

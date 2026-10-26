@@ -7,7 +7,6 @@ package it.bz.opendatahub.webcomponents.dataservice.application.service;
 import it.bz.opendatahub.webcomponents.dataservice.application.service.EmailService;
 import it.bz.opendatahub.webcomponents.dataservice.config.MailerConfig;
 import lombok.SneakyThrows;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,9 +14,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.springframework.mail.javamail.JavaMailSender;
 
-import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import jakarta.mail.Message;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 
 import static org.apache.commons.codec.CharEncoding.UTF_8;
 import static org.assertj.core.api.Assertions.*;
@@ -129,7 +128,7 @@ class EmailServiceTest {
 	@Test
 	@SneakyThrows
 	void actualSendMethodGetsCalledWithCorrectlySetMimeMessage() {
-		val mimeMessage = Mockito.mock(MimeMessage.class);
+		var mimeMessage = Mockito.mock(MimeMessage.class);
 
 		when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
 

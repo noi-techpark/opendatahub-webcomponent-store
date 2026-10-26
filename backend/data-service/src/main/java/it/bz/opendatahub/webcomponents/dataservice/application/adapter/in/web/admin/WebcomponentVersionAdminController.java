@@ -13,7 +13,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.in.DeleteWeb
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.ReplaceWebcomponentVersionUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.ScheduleWebcomponentVersionMetricsUpdateUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.UpdateWebcomponentVersionUseCase;
-import lombok.val;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @SecurityRequirement(name = "bearerAuth")
 @WebAdapter
@@ -48,28 +47,28 @@ public class WebcomponentVersionAdminController {
 
 	@PostMapping
 	public WebcomponentVersionAdminRest createNewVersion(@PathVariable String uuid, @RequestBody @Valid CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest request) {
-		val result = createWebcomponentVersionUseCase.createWebcomponentVersion(uuid, request);
+		var result = createWebcomponentVersionUseCase.createWebcomponentVersion(uuid, request);
 
 		return webcomponentVersionWebConverter.convert(result);
 	}
 
 	@PutMapping("/{versionTag}")
 	public WebcomponentVersionAdminRest replaceVersion(@PathVariable String uuid, @PathVariable String versionTag, @RequestBody @Valid ReplaceWebcomponentVersionUseCase.WebcomponentVersionReplaceRequest request) {
-		val result = replaceWebcomponentVersionUseCase.replaceWebcomponentVersion(uuid, versionTag, request);
+		var result = replaceWebcomponentVersionUseCase.replaceWebcomponentVersion(uuid, versionTag, request);
 
 		return webcomponentVersionWebConverter.convert(result);
 	}
 
 	@PatchMapping("/{versionTag}")
 	public WebcomponentVersionAdminRest updateVersion(@PathVariable String uuid, @PathVariable String versionTag, @RequestBody @Valid UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest request) {
-		val result = updateWebcomponentVersionUseCase.updateWebcomponentVersion(uuid, versionTag, request);
+		var result = updateWebcomponentVersionUseCase.updateWebcomponentVersion(uuid, versionTag, request);
 
 		return webcomponentVersionWebConverter.convert(result);
 	}
 
 	@PatchMapping("/{versionTag}/metrics")
 	public WebcomponentVersionAdminRest scheduleMetricsUpdate(@PathVariable String uuid, @PathVariable String versionTag) {
-		val result = scheduleWebcomponentVersionMetricsUpdateUseCase.scheduleMetricsUpdate(uuid, versionTag);
+		var result = scheduleWebcomponentVersionMetricsUpdateUseCase.scheduleMetricsUpdate(uuid, versionTag);
 
 		return webcomponentVersionWebConverter.convert(result);
 	}

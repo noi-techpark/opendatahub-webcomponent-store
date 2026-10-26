@@ -6,7 +6,6 @@ package it.bz.opendatahub.webcomponents.common.converter;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -76,7 +75,7 @@ class BeanConverterTest {
 
 	@Test
 	void convertListReturnsANewList() {
-		val original = new ArrayList<TypeA>();
+		var original = new ArrayList<TypeA>();
 
 		assertThat(CONVERTER.convert(original))
 			.isInstanceOf(List.class)
@@ -90,7 +89,7 @@ class BeanConverterTest {
 
 	@Test
 	void convertMapReturnsANewMap() {
-		val original = new HashMap<Object, TypeA>();
+		var original = new HashMap<Object, TypeA>();
 
 		assertThat(CONVERTER.convert(original))
 			.isInstanceOf(Map.class)
@@ -104,7 +103,7 @@ class BeanConverterTest {
 
 	@Test
 	void convertSetReturnsANewSet() {
-		val original = new HashSet<TypeA>();
+		var original = new HashSet<TypeA>();
 
 		assertThat(CONVERTER.convert(original))
 			.isInstanceOf(Set.class)
@@ -118,7 +117,7 @@ class BeanConverterTest {
 
 	@Test
 	void convertPageReturnsANewPage() {
-		val original = new PageImpl<TypeA>(new ArrayList<>());
+		var original = new PageImpl<TypeA>(new ArrayList<>());
 
 		assertThat(CONVERTER.convert(original))
 			.isInstanceOf(Page.class)

@@ -1,4 +1,4 @@
-FROM  maven:3-jdk-8-alpine
+FROM maven:3-eclipse-temurin-21-alpine
 COPY . backend
 RUN cd backend/data-service/src/main/resources/ && cp application-dev.properties application.properties
 RUN cd backend && mvn -B -DskipTests -DfinalName=ROOT --projects data-service --also-make package

@@ -6,7 +6,6 @@ package it.bz.opendatahub.webcomponents.dataservice.config;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 @Validated
 @ConfigurationProperties("application.mailer")
@@ -48,14 +47,14 @@ public class MailerConfig {
 
     @Bean
     public JavaMailSender getJavaMailSender() {
-        val mailSender = new JavaMailSenderImpl();
+        var mailSender = new JavaMailSenderImpl();
         mailSender.setHost(smtpHost);
         mailSender.setPort(smtpPort);
 
         mailSender.setUsername(smtpUser);
         mailSender.setPassword(smtpPassword);
 
-        val props = mailSender.getJavaMailProperties();
+        var props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "false");

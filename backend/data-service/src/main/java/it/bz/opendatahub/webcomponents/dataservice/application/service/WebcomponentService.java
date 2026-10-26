@@ -4,7 +4,6 @@
 
 package it.bz.opendatahub.webcomponents.dataservice.application.service;
 
-import it.bz.opendatahub.webcomponents.dataservice.application.adapter.out.sandbox.CodeSandboxCodingSandboxAdapter;
 import it.bz.opendatahub.webcomponents.dataservice.application.domain.Webcomponent;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.CreateCodingSandboxUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcomponentLogoUseCase;
@@ -16,7 +15,7 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWebc
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWorkspacePort;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.NotFoundException;
 import lombok.NonNull;
-import lombok.val;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class WebcomponentService implements GetWebcomponentUseCase, ListWebcompo
 	private final ReadWebcomponentVersionPort readWebcomponentVersionPort;
 	private final CodingSandboxPort codingSandboxPort;
 
-	public WebcomponentService(ReadWebcomponentPort readWebcomponentPort, ReadWorkspacePort readWorkspacePort, ReadWebcomponentVersionPort readWebcomponentVersionPort, CodeSandboxCodingSandboxAdapter codingSandboxPort) {
+	public WebcomponentService(ReadWebcomponentPort readWebcomponentPort, ReadWorkspacePort readWorkspacePort, ReadWebcomponentVersionPort readWebcomponentVersionPort, @Qualifier("codeSandboxCodingSandboxAdapter") CodingSandboxPort codingSandboxPort) {
 		this.readWebcomponentPort = readWebcomponentPort;
 		this.readWorkspacePort = readWorkspacePort;
 		this.readWebcomponentVersionPort = readWebcomponentVersionPort;
@@ -60,13 +59,13 @@ public class WebcomponentService implements GetWebcomponentUseCase, ListWebcompo
 
 	@Override
 	public byte[] getLogoImage(@NonNull String uuid) {
-		val webcomponent = readWebcomponentPort.getWebcomponentById(uuid);
+		var webcomponent = readWebcomponentPort.getWebcomponentById(uuid);
 
 		try {
 			return readWorkspacePort.readFile(Paths.get(uuid, webcomponent.getImage()));
 		}
 		catch (NotFoundException e) {
-			val latestVersion = readWebcomponentVersionPort.getLatestVersionOfWebcomponent(uuid);
+			var latestVersion = readWebcomponentVersionPort.getLatestVersionOfWebcomponent(uuid);
 
 			return readWorkspacePort.readFile(Paths.get(uuid, latestVersion.getVersionTag(), webcomponent.getImage()));
 		}

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public interface ReplaceWebcomponentLogoUseCase {
 	Webcomponent replaceLogo(@NonNull String webcomponentUuid, @NonNull WebcomponentLogoReplaceRequest request);

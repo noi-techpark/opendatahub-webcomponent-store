@@ -13,13 +13,14 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 
-public final class ListAuthorUserType extends ListUserType {
+public final class ListAuthorUserType extends ListUserType<Author> {
     public static final String NAME = "ListAuthorUserType";
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws SQLException {
-        final String s = rs.getString(names[0]);
+    public List<Author> nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner) throws SQLException {
+        final String s = rs.getString(position);
 
         if(s == null) {
             return null;

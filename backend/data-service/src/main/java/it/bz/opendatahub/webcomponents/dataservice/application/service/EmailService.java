@@ -8,7 +8,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.in.SendEmail
 import it.bz.opendatahub.webcomponents.dataservice.config.MailerConfig;
 import lombok.NonNull;
 import lombok.SneakyThrows;
-import lombok.val;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -49,8 +48,8 @@ public class EmailService implements SendEmailUseCase {
 			throw new IllegalArgumentException();
 		}
 
-		val mimeMessage = emailSender.createMimeMessage();
-		val helper = new MimeMessageHelper(mimeMessage, false, UTF_8);
+		var mimeMessage = emailSender.createMimeMessage();
+		var helper = new MimeMessageHelper(mimeMessage, false, UTF_8);
 
 		helper.setTo(to);
 		helper.setSubject(subject);
@@ -61,7 +60,7 @@ public class EmailService implements SendEmailUseCase {
 	}
 
 	public static boolean validateEmail(String emailAddress) {
-		val matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailAddress);
+		var matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailAddress);
 
 		return matcher.find();
 	}

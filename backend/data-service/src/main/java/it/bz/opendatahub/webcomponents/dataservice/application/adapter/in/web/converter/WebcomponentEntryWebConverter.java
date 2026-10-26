@@ -13,7 +13,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcom
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.ListSpdxLicenseUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.ListWebcomponentVersionUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.NotFoundException;
-import lombok.val;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
@@ -63,21 +62,21 @@ public class WebcomponentEntryWebConverter extends BeanConverter<Webcomponent, W
 
 	@Override
 	public Page<WebcomponentEntryRest> convert(Page<Webcomponent> sources) {
-		val uuids = new ArrayList<String>();
-		val licenceIds = new ArrayList<String>();
-		for(val entry : sources) {
+		var uuids = new ArrayList<String>();
+		var licenceIds = new ArrayList<String>();
+		for(var entry : sources) {
 			uuids.add(entry.getUuid());
 			if(entry.getLicense() != null) {
 				licenceIds.add(entry.getLicense());
 			}
 		}
 
-		val versions = listWebcomponentVersionUseCase.getLatestVersionOfEachWebcomponent(uuids);
-		val licenses = listSpdxLicenseUseCase.listByIds(licenceIds);
+		var versions = listWebcomponentVersionUseCase.getLatestVersionOfEachWebcomponent(uuids);
+		var licenses = listSpdxLicenseUseCase.listByIds(licenceIds);
 
-		val result = new ArrayList<WebcomponentEntryRest>();
-		for(val source : sources) {
-			val entry = super.convert(source);
+		var result = new ArrayList<WebcomponentEntryRest>();
+		for(var source : sources) {
+			var entry = super.convert(source);
 
 			if(versions.containsKey(entry.getUuid())) {
 				entry.setCurrentVersion(

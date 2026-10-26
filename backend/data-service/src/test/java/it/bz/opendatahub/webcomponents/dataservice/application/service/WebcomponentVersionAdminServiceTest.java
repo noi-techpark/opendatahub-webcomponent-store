@@ -23,7 +23,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWork
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.WriteWebcomponentVersionPort;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.WriteWorkspacePort;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.NotFoundException;
-import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -92,7 +91,7 @@ class WebcomponentVersionAdminServiceTest {
 	void createWebcomponentVersionThrowsIfWebcomponentDoesNotExist() {
 		when(readWebcomponentPort.getWebcomponentById(NON_EXISTING_WEBCOMPONENT_ID)).thenThrow(new NotFoundException(""));
 
-		val request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
+		var request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
 
 		assertThatExceptionOfType(NotFoundException.class).isThrownBy(
 			() -> webcomponentVersionAdminService.createWebcomponentVersion(NON_EXISTING_WEBCOMPONENT_ID, request)
@@ -104,7 +103,7 @@ class WebcomponentVersionAdminServiceTest {
 		when(readWebcomponentPort.getWebcomponentById(WEBCOMPONENT_A.getUuid())).thenReturn(WEBCOMPONENT_A);
 		when(readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(WEBCOMPONENT_A.getUuid(), NON_EXISTING_TAG_ID)).thenThrow(new NotFoundException(""));
 
-		val request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
+		var request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
 		request.setVersionTag(NON_EXISTING_TAG_ID);
 		request.setReleaseTimestamp(new Date());
 		request.setDistFiles(new ArrayList<>());
@@ -120,7 +119,7 @@ class WebcomponentVersionAdminServiceTest {
 		when(readWebcomponentPort.getWebcomponentById(WEBCOMPONENT_A.getUuid())).thenReturn(WEBCOMPONENT_A);
 		when(readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(any(), any())).thenThrow(new NotFoundException(""));
 
-		val request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
+		var request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
 		request.setVersionTag("TAG");
 		request.setReleaseTimestamp(new Date());
 		request.setDistFiles(new ArrayList<>());
@@ -136,7 +135,7 @@ class WebcomponentVersionAdminServiceTest {
 		when(readWebcomponentPort.getWebcomponentById(WEBCOMPONENT_A.getUuid())).thenReturn(WEBCOMPONENT_A);
 		when(readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(any(), any())).thenThrow(new NotFoundException(""));
 
-		val request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
+		var request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
 		request.setVersionTag("TAG");
 		request.setReleaseTimestamp(new Date());
 		request.setDistFiles(new ArrayList<>());
@@ -152,7 +151,7 @@ class WebcomponentVersionAdminServiceTest {
 		when(readWebcomponentPort.getWebcomponentById(WEBCOMPONENT_A.getUuid())).thenReturn(WEBCOMPONENT_A);
 		when(readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(any(), any())).thenThrow(new NotFoundException(""));
 
-		val request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
+		var request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
 		request.setVersionTag("TAG");
 		request.setReleaseTimestamp(new Date());
 		request.setDistFiles(new ArrayList<>());
@@ -170,7 +169,7 @@ class WebcomponentVersionAdminServiceTest {
 		when(writeWebcomponentVersionPort.saveWebcomponentVersion(any())).thenAnswer(i -> i.getArguments()[0]);
 		when(readWorkspacePort.getDirectorySizeInBytes(any())).thenReturn(44*1024L);
 
-		val desired = new WebcomponentVersion();
+		var desired = new WebcomponentVersion();
 		desired.setWebcomponentUuid(WEBCOMPONENT_A.getUuid());
 		desired.setVersionTag("TAG");
 		desired.setReleaseTimestamp(new Date());
@@ -188,7 +187,7 @@ class WebcomponentVersionAdminServiceTest {
 		desired.setReadMe("some readme");
 		desired.setLicenseAgreement("some license");
 
-		val request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
+		var request = new CreateWebcomponentVersionUseCase.WebcomponentVersionCreateRequest();
 		request.setVersionTag(desired.getVersionTag());
 		request.setReleaseTimestamp(desired.getReleaseTimestamp());
 		request.setDist(desired.getDist());
@@ -197,7 +196,7 @@ class WebcomponentVersionAdminServiceTest {
 		request.setReadMe(desired.getReadMe());
 		request.setLicenseAgreement(desired.getLicenseAgreement());
 
-		val result = webcomponentVersionAdminService.createWebcomponentVersion(WEBCOMPONENT_A.getUuid(), request);
+		var result = webcomponentVersionAdminService.createWebcomponentVersion(WEBCOMPONENT_A.getUuid(), request);
 
 		assertThat(result).isEqualToIgnoringGivenFields(desired);
 	}
@@ -255,7 +254,7 @@ class WebcomponentVersionAdminServiceTest {
 
 	@Test
 	void updateWebcomponentVersionThrowsIfUuidNull() {
-		val request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
+		var request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
 
 		assertThatNullPointerException().isThrownBy(
 			() -> webcomponentVersionAdminService.updateWebcomponentVersion(null, "TAG", request)
@@ -264,7 +263,7 @@ class WebcomponentVersionAdminServiceTest {
 
 	@Test
 	void updateWebcomponentVersionThrowsIfVersionTagIsNull() {
-		val request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
+		var request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
 
 		assertThatNullPointerException().isThrownBy(
 			() -> webcomponentVersionAdminService.updateWebcomponentVersion("UUID", null, request)
@@ -273,7 +272,7 @@ class WebcomponentVersionAdminServiceTest {
 
 	@Test
 	void updateWebcomponentVersionThrowsIfRequestIsNull() {
-		val request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
+		var request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
 
 		assertThatNullPointerException().isThrownBy(
 			() -> webcomponentVersionAdminService.updateWebcomponentVersion("UUID", "TAG", null)
@@ -284,7 +283,7 @@ class WebcomponentVersionAdminServiceTest {
 	void updateWebcomponentVersionThrowsIfSpecifiedVersionNotExists() {
 		when(readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(NON_EXISTING_WEBCOMPONENT_ID, NON_EXISTING_TAG_ID)).thenThrow(new NotFoundException(""));
 
-		val request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
+		var request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
 
 		assertThatExceptionOfType(NotFoundException.class).isThrownBy(
 			() -> webcomponentVersionAdminService.updateWebcomponentVersion(NON_EXISTING_WEBCOMPONENT_ID, NON_EXISTING_TAG_ID, request)
@@ -296,13 +295,13 @@ class WebcomponentVersionAdminServiceTest {
 		when(writeWebcomponentVersionPort.saveWebcomponentVersion(any())).thenAnswer(i -> i.getArguments()[0]);
 		when(readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(WEBCOMPONENT_VERSION_A.getWebcomponentUuid(), WEBCOMPONENT_VERSION_A.getVersionTag())).thenReturn(WEBCOMPONENT_VERSION_A);
 
-		val request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
+		var request = new UpdateWebcomponentVersionUseCase.WebcomponentVersionUpdateRequest();
 		request.setReleaseTimestamp(new Date());
 		request.setConfiguration(new Configuration());
 		request.setReadMe("newReadMe");
 		request.setLicenseAgreement("newLicense");
 
-		val result = webcomponentVersionAdminService.updateWebcomponentVersion(WEBCOMPONENT_VERSION_A.getWebcomponentUuid(), WEBCOMPONENT_VERSION_A.getVersionTag(), request);
+		var result = webcomponentVersionAdminService.updateWebcomponentVersion(WEBCOMPONENT_VERSION_A.getWebcomponentUuid(), WEBCOMPONENT_VERSION_A.getVersionTag(), request);
 
 		BeanAssert.assertThat(result).hasCopiedAllProperties(request);
 	}

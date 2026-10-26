@@ -10,7 +10,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcom
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWebcomponentPort;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.out.ReadWebcomponentVersionPort;
 import lombok.NonNull;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -29,11 +28,11 @@ public class WebcomponentConfigurationService implements GetWebcomponentConfigur
 
 	@Override
 	public WebcomponentConfiguration getConfiguration(@NonNull String uuid) {
-		val webcomponent = readWebcomponentPort.getWebcomponentById(uuid);
+		var webcomponent = readWebcomponentPort.getWebcomponentById(uuid);
 
-		val latestVersion = readWebcomponentVersionPort.getLatestVersionOfWebcomponent(uuid);
+		var latestVersion = readWebcomponentVersionPort.getLatestVersionOfWebcomponent(uuid);
 
-		val configuration = new WebcomponentConfiguration();
+		var configuration = new WebcomponentConfiguration();
 		configuration.setWebcomponentUuid(uuid);
 		configuration.setConfiguration(latestVersion.getConfiguration());
 		configuration.setDeliveryBaseUrl(deliveryBaseUrl);
@@ -45,11 +44,11 @@ public class WebcomponentConfigurationService implements GetWebcomponentConfigur
 
 	@Override
 	public WebcomponentConfiguration getConfiguration(@NonNull String uuid, @NonNull String versionTag) {
-		val webcomponent = readWebcomponentPort.getWebcomponentById(uuid);
+		var webcomponent = readWebcomponentPort.getWebcomponentById(uuid);
 
-		val version = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(uuid, versionTag);
+		var version = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(uuid, versionTag);
 
-		val configuration = new WebcomponentConfiguration();
+		var configuration = new WebcomponentConfiguration();
 		configuration.setWebcomponentUuid(uuid);
 		configuration.setConfiguration(version.getConfiguration());
 		configuration.setDeliveryBaseUrl(deliveryBaseUrl);

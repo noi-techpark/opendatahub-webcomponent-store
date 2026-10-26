@@ -22,7 +22,6 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.out.WriteWor
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.ConflictException;
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.NotFoundException;
 import lombok.NonNull;
-import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +50,7 @@ public class WebcomponentVersionAdminService implements CreateWebcomponentVersio
 	public WebcomponentVersion createWebcomponentVersion(@NonNull String webcomponentUuid, @NonNull WebcomponentVersionCreateRequest request) {
 		readWebcomponentPort.getWebcomponentById(webcomponentUuid); // just to throw an exception if it does not exist
 
-		val webcomponentVersion = createDomainObject(webcomponentUuid);
+		var webcomponentVersion = createDomainObject(webcomponentUuid);
 
 		ConverterUtils.copyProperties(request, webcomponentVersion);
 
@@ -71,7 +70,7 @@ public class WebcomponentVersionAdminService implements CreateWebcomponentVersio
 	@Override
 	@Transactional
 	public WebcomponentVersion replaceWebcomponentVersion(@NonNull String webcomponentUuid, @NonNull String versionTag, @NonNull WebcomponentVersionReplaceRequest request) {
-		val webcomponentVersion = createDomainObject(webcomponentUuid);
+		var webcomponentVersion = createDomainObject(webcomponentUuid);
 
 		ConverterUtils.copyProperties(request, webcomponentVersion);
 
@@ -92,7 +91,7 @@ public class WebcomponentVersionAdminService implements CreateWebcomponentVersio
 	@Override
 	@Transactional
 	public WebcomponentVersion updateWebcomponentVersion(@NonNull String webcomponentUuid, @NonNull String versionTag, @NonNull WebcomponentVersionUpdateRequest request) {
-		val webcomponentVersion = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(webcomponentUuid, versionTag);
+		var webcomponentVersion = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(webcomponentUuid, versionTag);
 
 		ConverterUtils.copyProperties(request, webcomponentVersion);
 
@@ -103,7 +102,7 @@ public class WebcomponentVersionAdminService implements CreateWebcomponentVersio
 	@Transactional
 	public void deleteWebcomponentVersionById(@NonNull String webcomponentUuid, @NonNull String versionTag) {
 		try {
-			val webcomponentVersion = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(webcomponentUuid, versionTag);
+			var webcomponentVersion = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(webcomponentUuid, versionTag);
 
 			webcomponentVersion.setDeleted(true);
 
@@ -115,7 +114,7 @@ public class WebcomponentVersionAdminService implements CreateWebcomponentVersio
 	@Override
 	@Transactional
 	public WebcomponentVersion scheduleMetricsUpdate(@NonNull String webcomponentUuid, @NonNull String versionTag) {
-		val webcomponentVersion = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(webcomponentUuid, versionTag);
+		var webcomponentVersion = readWebcomponentVersionPort.getSpecificVersionOfWebcomponent(webcomponentUuid, versionTag);
 
 		webcomponentVersion.setLighthouseUpdateRequired(true);
 
@@ -130,12 +129,12 @@ public class WebcomponentVersionAdminService implements CreateWebcomponentVersio
 	@Override
 	@Transactional
 	public void recalculateAllDistSizes() {
-		val allWebcomponents = readWebcomponentPort.listAll();
+		var allWebcomponents = readWebcomponentPort.listAll();
 
-		for(val webcomponent : allWebcomponents) {
-			val allVersions = readWebcomponentVersionPort.listAllVersionsOfWebcomponent(webcomponent.getUuid());
+		for(var webcomponent : allWebcomponents) {
+			var allVersions = readWebcomponentVersionPort.listAllVersionsOfWebcomponent(webcomponent.getUuid());
 
-			for (val webcomponentVersion : allVersions) {
+			for (var webcomponentVersion : allVersions) {
 				webcomponentVersion.setDistSizeTotalKb(
 					(int) (readWorkspacePort.getDirectorySizeInBytes(
 						Paths.get(webcomponentVersion.getWebcomponentUuid(), webcomponentVersion.getVersionTag(), "dist")
@@ -148,7 +147,7 @@ public class WebcomponentVersionAdminService implements CreateWebcomponentVersio
 	}
 
 	private WebcomponentVersion createDomainObject(String webcomponentUuid) {
-		val webcomponentVersion = new WebcomponentVersion();
+		var webcomponentVersion = new WebcomponentVersion();
 
 		webcomponentVersion.setWebcomponentUuid(webcomponentUuid);
 		webcomponentVersion.setDeleted(false);
@@ -171,8 +170,8 @@ public class WebcomponentVersionAdminService implements CreateWebcomponentVersio
 	}
 
 	void storeDistFiles(String webcomponentUuid, String versionTag, List<DistFile> distFiles) {
-		for(val file : distFiles) {
-			val payload = Base64.getDecoder().decode(file.getFileDataBase64());
+		for(var file : distFiles) {
+			var payload = Base64.getDecoder().decode(file.getFileDataBase64());
 
 			writeWorkspacePort.writeFile(
 				Paths.get(webcomponentUuid, versionTag, "dist", file.getFileName()),

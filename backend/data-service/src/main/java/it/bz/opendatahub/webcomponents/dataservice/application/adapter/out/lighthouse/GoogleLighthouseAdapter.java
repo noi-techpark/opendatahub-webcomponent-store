@@ -12,7 +12,6 @@ import it.bz.opendatahub.webcomponents.dataservice.exception.impl.MetricsInvalid
 import it.bz.opendatahub.webcomponents.dataservice.exception.impl.MetricsUnavailableException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -37,12 +36,12 @@ public class GoogleLighthouseAdapter implements GoogleLighthousePort {
 			throw new IllegalArgumentException();
 		}
 
-		val lighthouseUrl = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=" + url + "&key=" + apiKey;
+		var lighthouseUrl = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=" + url + "&key=" + apiKey;
 
 		log.debug(lighthouseUrl);
 
-		val desktop = fetchMetricsFromApi(lighthouseUrl + "&strategy=desktop");
-		val mobile = fetchMetricsFromApi(lighthouseUrl + "&strategy=mobile");
+		var desktop = fetchMetricsFromApi(lighthouseUrl + "&strategy=desktop");
+		var mobile = fetchMetricsFromApi(lighthouseUrl + "&strategy=mobile");
 
 		return new GoogleLighthouseMetrics(desktop, mobile);
 	}

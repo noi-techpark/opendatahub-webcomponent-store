@@ -4,7 +4,6 @@
 
 package it.bz.opendatahub.webcomponents.common.testing;
 
-import lombok.val;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Arrays;
@@ -25,7 +24,7 @@ public class BeanAssert extends AbstractAssert<BeanAssert, Object> {
 	public BeanAssert hasCopiedAllProperties(Object source, String... exceptions) {
 		isNotNull();
 
-		val properties = getPropertyListArray(source.getClass(), exceptions);
+		var properties = getPropertyListArray(source.getClass(), exceptions);
 
 		Assertions.assertThat(actual).isEqualToComparingOnlyGivenFields(source, properties);
 
@@ -33,12 +32,12 @@ public class BeanAssert extends AbstractAssert<BeanAssert, Object> {
 	}
 
 	private String[] getPropertyListArray(Class<?> c, String... exceptions) {
-		val result = new ArrayList<String>();
+		var result = new ArrayList<String>();
 
-		val exceptionsList = Arrays.asList(exceptions);
+		var exceptionsList = Arrays.asList(exceptions);
 
-		val fields = c.getDeclaredFields();
-		for(val field : fields) {
+		var fields = c.getDeclaredFields();
+		for(var field : fields) {
 			if(!exceptionsList.contains(field.getName())) {
 				result.add(field.getName());
 			}

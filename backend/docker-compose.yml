@@ -59,7 +59,7 @@ services:
 
   postgres:
     container_name: wcstore_postgres
-    image: postgres:13
+    image: postgres:17
     ports:
       - "5555:5432"
     environment:
@@ -72,7 +72,7 @@ services:
   # Testing mail forms
   mailhog:
     container_name: wcstore_mail
-    image: mailhog/mailhog
+    image: axllent/mailpit
     ports:
       - "1025:1025" #SMTP port
       - "8025:8025" #Web frontend
