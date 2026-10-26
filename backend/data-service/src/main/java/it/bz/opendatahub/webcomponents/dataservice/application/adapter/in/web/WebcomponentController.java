@@ -6,7 +6,6 @@ package it.bz.opendatahub.webcomponents.dataservice.application.adapter.in.web;
 
 import it.bz.opendatahub.webcomponents.common.converter.ConverterUtils;
 import it.bz.opendatahub.webcomponents.common.stereotype.WebAdapter;
-import it.bz.opendatahub.webcomponents.common.util.ThumbnailUtility;
 import it.bz.opendatahub.webcomponents.dataservice.application.adapter.in.web.converter.WebcomponentEntryWebConverter;
 import it.bz.opendatahub.webcomponents.dataservice.application.adapter.in.web.converter.WebcomponentWebConverter;
 import it.bz.opendatahub.webcomponents.dataservice.application.adapter.in.web.rest.WebcomponentConfigurationRest;
@@ -18,8 +17,10 @@ import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcom
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcomponentLogoUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.GetWebcomponentUseCase;
 import it.bz.opendatahub.webcomponents.dataservice.application.port.in.ListWebcomponentUseCase;
+import it.bz.opendatahub.webcomponents.dataservice.application.service.LogoThumbnailService;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,27 +34,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @WebAdapter
 @RestController
 @RequestMapping("/webcomponent")
 public class WebcomponentController {
-
-	@Value("${thumbnail.width}")
-	private int thumbnailWidth;
-	@Value("${thumbnail.height}")
-	private int thumbnailHeight;
 
 	private final GetWebcomponentUseCase getWebcomponentUseCase;
 	private final ListWebcomponentUseCase listWebcomponentUseCase;
@@ -62,16 +52,15 @@ public class WebcomponentController {
 	private final WebcomponentWebConverter webcomponentWebConverter;
 	private final WebcomponentEntryWebConverter webcomponentEntryWebConverter;
 	private final CreateCodingSandboxUseCase createCodingSandboxUseCase;
-
-	private final Map<String, byte[]> thumbCache = new HashMap<>();
-	private final Map<String, Long> thumbCacheTimer = new HashMap<>();
+	private final LogoThumbnailService logoThumbnailService;
 
 	public WebcomponentController(GetWebcomponentUseCase getWebcomponentUseCase,
 			ListWebcomponentUseCase listWebcomponentUseCase,
 			GetWebcomponentConfigurationUseCase getWebcomponentConfigurationUseCase,
 			GetWebcomponentLogoUseCase getWebcomponentLogoUseCase, WebcomponentWebConverter webcomponentWebConverter,
 			WebcomponentEntryWebConverter webcomponentEntryWebConverter,
-			CreateCodingSandboxUseCase createCodingSandboxUseCase) {
+			CreateCodingSandboxUseCase createCodingSandboxUseCase,
+			LogoThumbnailService logoThumbnailService) {
 		this.getWebcomponentUseCase = getWebcomponentUseCase;
 		this.listWebcomponentUseCase = listWebcomponentUseCase;
 		this.getWebcomponentConfigurationUseCase = getWebcomponentConfigurationUseCase;
@@ -79,6 +68,7 @@ public class WebcomponentController {
 		this.webcomponentWebConverter = webcomponentWebConverter;
 		this.webcomponentEntryWebConverter = webcomponentEntryWebConverter;
 		this.createCodingSandboxUseCase = createCodingSandboxUseCase;
+		this.logoThumbnailService = logoThumbnailService;
 	}
 
 	@GetMapping
@@ -137,32 +127,10 @@ public class WebcomponentController {
 	}
 
 	@GetMapping(value = "/{uuid}/logo/thumb", produces = "image/jpg")
-	public byte[] getLogoImageThumb(@PathVariable String uuid) throws IOException {
-		if (thumbCacheTimer.containsKey(uuid) && thumbCacheTimer.get(uuid) < System.currentTimeMillis()) {
-			thumbCacheTimer.remove(uuid);
-			thumbCache.remove(uuid);
-		}
-
-		if (thumbCache.containsKey(uuid)) {
-			return thumbCache.get(uuid);
-		}
-
-		var fullLogoData = getLogoImage(uuid);
-
-		var image = ThumbnailUtility.createThumbnailForImage(new ByteArrayInputStream(fullLogoData), thumbnailWidth,
-				thumbnailHeight);
-
-		var data = ThumbnailUtility.toJpg(image).toByteArray();
-
-		var max = 100;
-		var min = 10;
-		var range = max - min + 1;
-		var rand = (int) (Math.random() * range) + min;
-
-		thumbCacheTimer.put(uuid, System.currentTimeMillis() + 60 * 60 * 1000L + rand * 1000L);
-		thumbCache.put(uuid, data);
-
-		return data;
+	public ResponseEntity<byte[]> getLogoImageThumb(@PathVariable String uuid) throws IOException {
+		return ResponseEntity.ok()
+				.cacheControl(CacheControl.maxAge(Duration.ofHours(1)).cachePublic())
+				.body(logoThumbnailService.getThumbnail(uuid));
 	}
 
 	private WebcomponentConfigurationRest toRest(WebcomponentConfiguration domain) {
