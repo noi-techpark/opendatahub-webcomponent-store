@@ -63,10 +63,16 @@ export const mutations: MutationTree<RootState> = {
   }
 };
 
+let latestRequest = 0;
+
 export const actions: ActionTree<RootState, RootState> = {
     async loadPage({ commit }, { pageRequest,sorting, filter }) {
         commit('SET_SORTING', sorting);
+        const requestId = ++latestRequest;
         const result = await $api.webcomponent.findAllPaged(pageRequest, filter);
+        if (requestId !== latestRequest) {
+            return;
+        }
 
         commit('SET_LOADED_PAGE', result);
     },

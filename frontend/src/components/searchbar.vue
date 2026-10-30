@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
                   <input
                     ref="searchTermInput"
                     v-model="internalSearchTerm"
-                    :onkeyup="termUpdated()"
+                    @input="termUpdated"
                     type="text"
                     placeholder="Search"
                     style="outline: none"
@@ -381,7 +381,6 @@ export default Vue.extend({
           tags: this.userSelectedTags,
           term: this.internalSearchTerm,
         });
-        this.$refs.searchTermInput.focus();
       }
     },
     termSubmitted() {
