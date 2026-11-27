@@ -1,0 +1,52 @@
+# Test environment values for the webcompstore-frontend release (webcompstore chart).
+#
+# Static Nuxt build served by nginx. API/CDN URLs are baked in at build time from
+# frontend/.env (see .github/workflows/frontend.yml), so there is no runtime env.
+#
+# image.repository / image.tag / image.pullPolicy are overwritten by the workflow.
+
+image:
+  repository: ghcr.io/noi-techpark/opendatahub-webcomponent-store/opendatahub-webcomponent-store-frontend-test
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+# The GHCR packages were pulled with credentials (Ansible docker login), so treat them
+# as private. This secret already exists in the `core` namespace (see infra-v2 docs/secrets.md).
+imagePullSecrets:
+  - name: container-registry-r
+
+replicaCount: 1
+
+# Memory request == limit so the pod is protected from node-pressure eviction.
+resources:
+  requests:
+    cpu: 10m
+    memory: 64Mi
+  limits:
+    memory: 64Mi
+
+service:
+  type: ClusterIP
+  port: 80
+  targetport: http
+  containerport: 80
+
+health:
+  delay: 5
+  periodSeconds: 10
+  failureThreshold: 6
+
+# TLS ends at the Caddy proxy (proxy-test), which forwards to the cluster ingress with
+# the original Host header; the ingress serves plain HTTP behind it.
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: webcomponents.opendatahub.testingmachine.eu
+      paths:
+        - path: "/"
+          pathType: Prefix
+
+env: {}
+
+envSecret: {}

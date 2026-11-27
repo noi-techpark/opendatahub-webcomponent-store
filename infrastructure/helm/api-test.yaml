@@ -1,0 +1,110 @@
+# Test environment values for the webcompstore-api release (webcompstore chart),
+# i.e. backend/data-service.
+#
+# Non-secret configuration lives here (committed). Sensitive values are listed under
+# `envSecret` with empty placeholders and are filled in at deploy time by the GitHub
+# Actions workflow (yq) from repository secrets, then rendered into a K8s Secret.
+#
+# image.repository / image.tag / image.pullPolicy are also overwritten by the workflow.
+
+image:
+  repository: ghcr.io/noi-techpark/opendatahub-webcomponent-store/opendatahub-webcomponent-store-api-test
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets:
+  - name: container-registry-r
+
+replicaCount: 1
+
+# Memory request == limit so the pod is protected from node-pressure eviction.
+# Heap is capped at 1 GiB via _JAVA_OPTIONS below; the rest is metaspace, threads
+# and thumbnail generation buffers.
+resources:
+  requests:
+    cpu: 100m
+    memory: 1536Mi
+  limits:
+    memory: 1536Mi
+
+service:
+  type: ClusterIP
+  port: 80
+  targetport: http
+  containerport: 8080
+
+# Spring Boot 2.3 + Flyway on Java 8 takes a while to open its port.
+health:
+  delay: 60
+  periodSeconds: 10
+  failureThreshold: 6
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    # The CLI uploads dist bundles base64 encoded in the JSON body.
+    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+  hosts:
+    - host: api.webcomponents.opendatahub.testingmachine.eu
+      paths:
+        - path: "/"
+          pathType: Prefix
+
+# The api writes the dist files and images uploaded via the CLI to the workspace and
+# owns the claim; the webcompstore-cdn release mounts it to serve them.
+# Scaleway File Storage (ReadWriteMany) so both pods can mount it from any node.
+# 25 GB is its minimum size, and sizes must be whole GB (1e9 bytes), hence G, not Gi.
+persistence:
+  enabled: true
+  create: true
+  claimName: webcompstore-workspace
+  storageClass: sfs-standard
+  accessMode: ReadWriteMany
+  size: 25G
+  mountPath: /workspace
+
+# Non-secret environment (mirrors the former .env in .github/workflows/data-service.yml).
+env:
+  API_SERVER_PORT: "8080"
+  _JAVA_OPTIONS: "-Xms128m -Xmx1024m"
+  DEBUG_LEVEL: "INFO"
+  WORKSPACE_PATH: "/workspace"
+
+  # Scaleway "test-pg-misc" instance (infrastructure repo, terraform/scaleway/digital/db,
+  # `terraform output endpoints` -> pg-misc).
+  DB_URL: "jdbc:postgresql://163.172.176.125:3208/webcompstore"
+  DB_SCHEMA: "public"
+
+  # Endpoint from where we create a standalone preview inside a simple HTML skeleton
+  API_PREVIEW_URL: "https://api.webcomponents.opendatahub.testingmachine.eu/preview"
+  # Base URL from where we will distribute build artifacts (javascript bundles and assets)
+  CDN_DIST_URL: "https://cdn.webcomponents.opendatahub.testingmachine.eu/dist"
+  API_SWAGGER_BASE_URL: "https://api.webcomponents.opendatahub.testingmachine.eu"
+
+  # Security for CRUD operations
+  KEYCLOAK_URL: "https://auth.opendatahub.testingmachine.eu/auth/"
+  KEYCLOAK_SSL_REQUIRED: "none"
+  KEYCLOAK_REALM: "noi"
+  KEYCLOAK_CLIENT_ID: "it.bz.opendatahub.webcomponents.api"
+
+  # SMTP configuration
+  SMTP_PWD: "DEFUNCT"
+  SMTP_USR: "no-reply@testingmachine.eu"
+  SMTP_TO: "help@opendatahub.com"
+  SMTP_FROM: "no-reply@testingmachine.eu"
+  SMTP_SUBJECT: "Web Component Store: Contact form (TEST PLEASE IGNORE)"
+  SMTP_HOST: "smtp.eu.mailgun.org"
+  SMTP_PORT: "587"
+  SMTP_DEBUG: "true"
+
+  THUMBNAIL_WIDTH: "800"
+  THUMBNAIL_HEIGHT: "600"
+
+# Sensitive environment. Placeholders only — filled at deploy time by the workflow.
+envSecret:
+  DB_USR: ""
+  DB_PWD: ""
+  KEYCLOAK_CLIENT_SECRET: ""
+  LIGHTHOUSE_API_KEY: ""
+  HCAPTCHA_SECRET_KEY: ""

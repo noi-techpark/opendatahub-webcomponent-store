@@ -1,0 +1,14 @@
+apiVersion: v2
+name: webcompstore
+description: >-
+  Helm chart for the Open Data Hub Web Component Store. One chart, installed as three
+  releases (webcompstore-frontend, webcompstore-api, webcompstore-cdn) with their own
+  values files.
+
+type: application
+
+# Chart version — bump on chart/template changes.
+version: 1.0.0
+
+# Application version.
+appVersion: "1.0.0"

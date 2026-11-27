@@ -1,0 +1,4 @@
+{{ include "webcompstore.fullname" . }} deployed (image {{ .Values.image.repository }}:{{ .Values.image.tag }}).
+{{- range .Values.ingress.hosts }}
+  http://{{ .host }}
+{{- end }}

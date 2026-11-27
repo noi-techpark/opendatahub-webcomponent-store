@@ -1,0 +1,74 @@
+# Test environment values for the webcompstore-cdn release (webcompstore chart),
+# i.e. backend/delivery-service.
+#
+# Non-secret configuration lives here (committed). Sensitive values are listed under
+# `envSecret` with empty placeholders and are filled in at deploy time by the GitHub
+# Actions workflow (yq) from repository secrets, then rendered into a K8s Secret.
+#
+# image.repository / image.tag / image.pullPolicy are also overwritten by the workflow.
+
+image:
+  repository: ghcr.io/noi-techpark/opendatahub-webcomponent-store/opendatahub-webcomponent-store-cdn-test
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets:
+  - name: container-registry-r
+
+replicaCount: 1
+
+# Memory request == limit so the pod is protected from node-pressure eviction.
+# Heap is capped at 1 GiB via _JAVA_OPTIONS below.
+resources:
+  requests:
+    cpu: 100m
+    memory: 1536Mi
+  limits:
+    memory: 1536Mi
+
+service:
+  type: ClusterIP
+  port: 80
+  targetport: http
+  containerport: 8080
+
+# Spring Boot 2.3 + Flyway on Java 8 takes a while to open its port.
+health:
+  delay: 60
+  periodSeconds: 10
+  failureThreshold: 6
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: cdn.webcomponents.opendatahub.testingmachine.eu
+      paths:
+        - path: "/"
+          pathType: Prefix
+
+# Owned by the webcompstore-api release (see api-test.yaml), which writes the files.
+persistence:
+  enabled: true
+  create: false
+  claimName: webcompstore-workspace
+  mountPath: /workspace
+
+# Non-secret environment (mirrors the former .env in .github/workflows/delivery-service.yml).
+env:
+  CDN_SERVER_PORT: "8080"
+  _JAVA_OPTIONS: "-Xms128m -Xmx1024m"
+  DEBUG_LEVEL: "INFO"
+  WORKSPACE_PATH: "/workspace"
+
+  CDN_SWAGGER_BASE_URL: "https://cdn.webcomponents.opendatahub.testingmachine.eu"
+
+  # Scaleway "test-pg-misc" instance (infrastructure repo, terraform/scaleway/digital/db,
+  # `terraform output endpoints` -> pg-misc).
+  DB_URL: "jdbc:postgresql://163.172.176.125:3208/webcompstore"
+  DB_SCHEMA: "public"
+
+# Sensitive environment. Placeholders only — filled at deploy time by the workflow.
+envSecret:
+  DB_USR: ""
+  DB_PWD: ""

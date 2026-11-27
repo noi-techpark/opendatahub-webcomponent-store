@@ -5,11 +5,15 @@ on:
     paths:
       - 'backend/delivery-service/**'
       - 'backend/common/**'
+      - 'infrastructure/helm/webcompstore/**'
+      - 'infrastructure/helm/cdn-test.yaml'
       - '.github/workflows/delivery-service.yml'
   pull_request:
     paths:
       - 'backend/delivery-service/**'
       - 'backend/common/**'
+      - 'infrastructure/helm/webcompstore/**'
+      - 'infrastructure/helm/cdn-test.yaml'
       - '.github/workflows/delivery-service.yml'
 
 env:
@@ -34,40 +38,29 @@ jobs:
           working-directory: backend
 
 
+  # Deploy Test (Kubernetes / Scaleway Kapsule)
   deploy-test-delivery-service:
     runs-on: ubuntu-24.04
     if: github.ref == 'refs/heads/main'
     needs: test
+    environment: test
     concurrency: deploy-test-delivery-service
     env:
       DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}-cdn-test
       DOCKER_TAG: ${{ github.sha }}
+      VALUES_FILE: infrastructure/helm/cdn-test.yaml
     steps:
       - name: Checkout source code
         uses: noi-techpark/github-actions/checkout@v2
 
+      # Only needed by docker-compose.build.yml (env_file). The runtime configuration
+      # lives in infrastructure/helm/cdn-test.yaml.
       - name: Create .env file
         uses: noi-techpark/github-actions/env-file@v2
         env:
           X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
           X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
-          X_CDN_SERVER_PORT: 1201
-
-          X_DEBUG_LEVEL: "INFO"
-          X_WORKSPACE_PATH: "/workspace"
-
-          X_CDN_SWAGGER_BASE_URL: "https://cdn.webcomponents.opendatahub.testingmachine.eu"
-
-          X_DB_URL: "jdbc:postgresql://test-pg-misc.co90ybcr8iim.eu-west-1.rds.amazonaws.com:5432/webcompstore"
-          X_DB_USR: ${{ secrets.DB_USR_TEST }}
-          X_DB_PWD: ${{ secrets.DB_PWD_TEST }}
-          X_DB_SCHEMA: "public"
-
-          X_DOCKER_CLIENT_TIMEOUT: 360
-          X_COMPOSE_HTTP_TIMEOUT: 360
-
-          X_JAVA_OPTIONS: "-Xms128m -Xmx1024m"
 
       - name: Prepare application.properties
         run: cp application-deployment.properties application.properties 
@@ -87,15 +80,26 @@ jobs:
           docker-password: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ./backend/delivery-service/infrastructure/docker/
 
-      - name: Deploy application
-        uses: noi-techpark/github-actions/docker-deploy@v2
+      - name: Customize cdn-test.yaml
+        run: |
+          yq -i '.image.repository="${{ env.DOCKER_IMAGE }}"' ${{ env.VALUES_FILE }}
+          yq -i '.image.tag="${{ env.DOCKER_TAG }}"' ${{ env.VALUES_FILE }}
+          yq -i '.image.pullPolicy="IfNotPresent"' ${{ env.VALUES_FILE }}
+
+          yq -i '.envSecret.DB_USR="${{ secrets.DB_USR_TEST }}"' ${{ env.VALUES_FILE }}
+          yq -i '.envSecret.DB_PWD="${{ secrets.DB_PWD_TEST }}"' ${{ env.VALUES_FILE }}
+
+      # Mounts the webcompstore-workspace claim created by the webcompstore-api release
+      # (data-service.yml): on the very first rollout deploy the api first.
+      - name: Deploy on cluster
+        uses: noi-techpark/github-actions/helm-deploy-scw@v3
         with:
-          hosts: 'test'
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          docker-username: 'noi-techpark-bot'
-          docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          project-name: ${{ env.PROJECT_NAME }}
-          working-directory: ./backend/delivery-service/infrastructure/ansible
+          k8s-name: webcompstore-cdn
+          k8s-namespace: core
+          chart-path: infrastructure/helm/webcompstore
+          values-file: ${{ env.VALUES_FILE }}
+          scw-access-key: ${{ secrets.SCW_DEV_ACCESS_KEY_ID }}
+          scw-secret-key: ${{ secrets.SCW_DEV_ACCESS_KEY_SECRET }}
 
   deploy-prod-delivery-service:
     runs-on: ubuntu-24.04

@@ -5,11 +5,15 @@ on:
     paths:
       - 'backend/data-service/**'
       - 'backend/common/**'
+      - 'infrastructure/helm/webcompstore/**'
+      - 'infrastructure/helm/api-test.yaml'
       - '.github/workflows/data-service.yml'
   pull_request:
     paths:
       - 'backend/data-service/**'
       - 'backend/common/**'
+      - 'infrastructure/helm/webcompstore/**'
+      - 'infrastructure/helm/api-test.yaml'
       - '.github/workflows/data-service.yml'
 
 env:
@@ -34,69 +38,29 @@ jobs:
           working-directory: backend
 
 
+  # Deploy Test (Kubernetes / Scaleway Kapsule)
   deploy-test-data-service:
     runs-on: ubuntu-24.04
     if: github.ref == 'refs/heads/main'
     needs: test
+    environment: test
     concurrency: deploy-test-data-service
     env:
       DOCKER_IMAGE: ghcr.io/${{ github.repository }}/${{ github.event.repository.name }}-api-test
       DOCKER_TAG: ${{ github.sha }}
+      VALUES_FILE: infrastructure/helm/api-test.yaml
     steps:
       - name: Checkout source code
         uses: noi-techpark/github-actions/checkout@v2
 
+      # Only needed by docker-compose.build.yml (env_file). The runtime configuration
+      # lives in infrastructure/helm/api-test.yaml.
       - name: Create .env file
         uses: noi-techpark/github-actions/env-file@v2
         env:
           X_COMPOSE_PROJECT_NAME: ${{ env.PROJECT_NAME }}
           X_DOCKER_IMAGE: ${{ env.DOCKER_IMAGE }}
           X_DOCKER_TAG: ${{ env.DOCKER_TAG }}
-          X_API_SERVER_PORT: 1200
-
-          X_LIGHTHOUSE_API_KEY: ${{ secrets.LIGHTHOUSE_API_KEY_TEST }}
-          X_DEBUG_LEVEL: "INFO"
-          X_WORKSPACE_PATH: "/workspace"
-
-          X_DB_URL: "jdbc:postgresql://test-pg-misc.co90ybcr8iim.eu-west-1.rds.amazonaws.com:5432/webcompstore"
-          X_DB_USR: ${{ secrets.DB_USR_TEST }}
-          X_DB_PWD: ${{ secrets.DB_PWD_TEST }}
-          X_DB_SCHEMA: "public"
-
-          # Endpoint from where we create a standalone preview inside a simple HTML skeleton
-          X_API_PREVIEW_URL: "https://api.webcomponents.opendatahub.testingmachine.eu/preview"
-
-          # Base URL from where we will distribute build artifacts (javascript bundles and assets)
-          X_CDN_DIST_URL: "https://cdn.webcomponents.opendatahub.testingmachine.eu/dist"
-
-          X_API_SWAGGER_BASE_URL: "https://api.webcomponents.opendatahub.testingmachine.eu"
-
-          # Security for CRUD operations
-          X_KEYCLOAK_URL: "https://auth.opendatahub.testingmachine.eu/auth/"
-          X_KEYCLOAK_SSL_REQUIRED: "none"
-          X_KEYCLOAK_REALM: "noi"
-          X_KEYCLOAK_CLIENT_ID: "it.bz.opendatahub.webcomponents.api"
-          X_KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET_TEST }}
-
-          # SMTP configuration
-          X_SMTP_PWD: DEFUNCT
-          X_SMTP_USR: "no-reply@testingmachine.eu"
-          X_SMTP_TO: "help@opendatahub.com"
-          X_SMTP_FROM: "no-reply@testingmachine.eu"
-          X_SMTP_SUBJECT: "Web Component Store: Contact form (TEST PLEASE IGNORE)"
-          X_SMTP_HOST: "smtp.eu.mailgun.org"
-          X_SMTP_PORT: 587
-          X_SMTP_DEBUG: "true"
-
-          X_DOCKER_CLIENT_TIMEOUT: 360
-          X_COMPOSE_HTTP_TIMEOUT: 360
-
-          X_JAVA_OPTIONS: "-Xms128m -Xmx1024m"
-
-          X_HCAPTCHA_SECRET_KEY: ${{ secrets.HCAPTCHA_SECRET_KEY }}
-
-          X_THUMBNAIL_WIDTH: 800
-          X_THUMBNAIL_HEIGHT: 600
 
       - name: Prepare application.properties
         run: cp application-deployment.properties application.properties 
@@ -116,15 +80,27 @@ jobs:
           docker-password: ${{ secrets.GITHUB_TOKEN }}
           working-directory: ./backend/data-service/infrastructure/docker/
 
-      - name: Deploy application
-        uses: noi-techpark/github-actions/docker-deploy@v2
+      - name: Customize api-test.yaml
+        run: |
+          yq -i '.image.repository="${{ env.DOCKER_IMAGE }}"' ${{ env.VALUES_FILE }}
+          yq -i '.image.tag="${{ env.DOCKER_TAG }}"' ${{ env.VALUES_FILE }}
+          yq -i '.image.pullPolicy="IfNotPresent"' ${{ env.VALUES_FILE }}
+
+          yq -i '.envSecret.DB_USR="${{ secrets.DB_USR_TEST }}"' ${{ env.VALUES_FILE }}
+          yq -i '.envSecret.DB_PWD="${{ secrets.DB_PWD_TEST }}"' ${{ env.VALUES_FILE }}
+          yq -i '.envSecret.KEYCLOAK_CLIENT_SECRET="${{ secrets.KEYCLOAK_CLIENT_SECRET_TEST }}"' ${{ env.VALUES_FILE }}
+          yq -i '.envSecret.LIGHTHOUSE_API_KEY="${{ secrets.LIGHTHOUSE_API_KEY_TEST }}"' ${{ env.VALUES_FILE }}
+          yq -i '.envSecret.HCAPTCHA_SECRET_KEY="${{ secrets.HCAPTCHA_SECRET_KEY }}"' ${{ env.VALUES_FILE }}
+
+      - name: Deploy on cluster
+        uses: noi-techpark/github-actions/helm-deploy-scw@v3
         with:
-          hosts: 'test'
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          docker-username: 'noi-techpark-bot'
-          docker-password: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-          project-name: ${{ env.PROJECT_NAME }}
-          working-directory: ./backend/data-service/infrastructure/ansible
+          k8s-name: webcompstore-api
+          k8s-namespace: core
+          chart-path: infrastructure/helm/webcompstore
+          values-file: ${{ env.VALUES_FILE }}
+          scw-access-key: ${{ secrets.SCW_DEV_ACCESS_KEY_ID }}
+          scw-secret-key: ${{ secrets.SCW_DEV_ACCESS_KEY_SECRET }}
 
   deploy-prod-data-service:
     runs-on: ubuntu-24.04
